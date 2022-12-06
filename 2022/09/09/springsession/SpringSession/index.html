@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Spring Session | SK370 博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  
+    <meta name="keywords" content="SK370, JAVA, 博客">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="SK370 博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">SK370 博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">SK370的个人博客</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-springsession/SpringSession" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Spring Session
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2022-09-09T08:58:05.000Z" itemprop="datePublished">2022年09月09日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/Spring-Session/">Spring Session</a>
+  </div>
+
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2022/09/09/springsession/SpringSession/#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><em>Http协议是无状态的，这样对于服务端来说，没有办法区分是新的访客还是旧的访客。但是，有些业务场景，需要追踪用户多个请求，此时就需要Session。Spring Session实现了无侵入式操作session的方式。</em></p>
+<span id="more"></span>
+<h2 id="1-登录状态保持及检查"><a class="markdownIt-Anchor" href="#1-登录状态保持及检查"></a> 1. 登录状态保持及检查</h2>
+<p>http 协议时无状态的，无类型的，所有的信息都会被解析为字符串，也不会记录两次请求之间的联系。<br>
+<img src="/2022/09/09/springsession/SpringSession/image.png" alt="image.png"></p>
+<h3 id="11-会话控制机制"><a class="markdownIt-Anchor" href="#11-会话控制机制"></a> 1.1 会话控制机制</h3>
+<p>Cookie 的工作机制：</p>
+<ul>
+<li>服务器端返回 Cookie 信息给浏览器
+<ul>
+<li>Java 代码： response.addCookie(cookie 对象);</li>
+<li>HTTP 响应消息头： Set-Cookie: Cookie 的名字=Cookie 的值</li>
+</ul>
+</li>
+<li>浏览器接收到服务器端返回的 Cookie， 以后的每一次请求都会把 Cookie 带上
+<ul>
+<li>HTTP 请求消息头： Cookie： Cookie 的名字=Cookie 的值</li>
+</ul>
+</li>
+</ul>
+<p>Session 的工作机制</p>
+<ul>
+<li>获取 Session 对象： request.getSession()</li>
+<li>检查当前请求是否携带了 JSESSIONID 这个 Cookie
+<ul>
+<li>带了： 根据这个 JSESSIONID 在服务器端查找对应的 Session 对象
+<ul>
+<li>能找到： 就把找到的 Session 对象返回</li>
+<li>没找到： 新建 Session 对象返回， 同时返回 JSESSIONID 的 Cookie</li>
+</ul>
+</li>
+<li>没带： 新建 Session 对象返回， 同时返回 JSESSIONID 的 Cookie</li>
+</ul>
+</li>
+</ul>
+<h3 id="12-session-共享"><a class="markdownIt-Anchor" href="#12-session-共享"></a> 1.2 session 共享</h3>
+<p>在分布式和集群环境下， 每个具体模块运行在单独的 Tomcat 上， 而 Session 是被不同 Tomcat 所“区隔” 的， 所以不能互通， 会导致程序运行时， 用户会话数据发生错误。 有的服务器上有， 有的服务器上没有。<br>
+<img src="/2022/09/09/springsession/SpringSession/image-1669761689137.png" alt="image.png"></p>
+<h4 id="121-session-同步"><a class="markdownIt-Anchor" href="#121-session-同步"></a> 1.2.1 Session 同步</h4>
+<p><img src="/2022/09/09/springsession/SpringSession/image-1669761690725.png" alt="image.png"><br>
+问题 1： 造成 Session 在各个服务器上“同量” 保存。 TomcatA 保存了 1G 的 Session 数据， TomcatB 也需要保存 1G 的 Session 数据。 数据量太大的会导<br>
+致 Tomcat 性能下降。<br>
+问题 2： 数据同步对性能有一定影响。</p>
+<h4 id="122-将-session-数据存储在-cookie-中"><a class="markdownIt-Anchor" href="#122-将-session-数据存储在-cookie-中"></a> 1.2.2 将 Session 数据存储在 Cookie 中</h4>
+<p>做法： 所有会话数据在浏览器端使用 Cookie 保存， 服务器端不存储任何会话数据。<br>
+好处： 服务器端大大减轻了数据存储的压力。 不会有 Session 不一致问题<br>
+缺点：Cookie 能够存储的数据非常有限。 一般是 4KB。 不能存储丰富的数据。<br>
+Cookie 数据在浏览器端存储， 很大程度上不受服务器端控制， 如果浏览器端清理 Cookie， 相关数据会丢失。</p>
+<h4 id="123-反向代理-hash-一致性"><a class="markdownIt-Anchor" href="#123-反向代理-hash-一致性"></a> 1.2.3 反向代理 hash 一致性</h4>
+<p><img src="/2022/09/09/springsession/SpringSession/image-1669761695888.png" alt="image.png"></p>
+<p>问题 1： 具体一个浏览器， 专门访问某一个具体服务器， 如果服务器宕机，会丢失数据。 存在单点故障风险。<br>
+问题 2： 仅仅适用于集群范围内， 超出集群范围， 负载均衡服务器无效。</p>
+<h4 id="124-后端统一存储-session-数据"><a class="markdownIt-Anchor" href="#124-后端统一存储-session-数据"></a> 1.2.4 后端统一存储 Session 数据</h4>
+<p>后端存储 Session 数据时， 一般需要使用 Redis 这样的内存数据库， 而一般不采用 MySQL 这样的关系型数据库。 原因如下：<br>
+Session 数据存取比较频繁。 内存访问速度快。<br>
+Session 有过期时间， Redis 这样的内存数据库能够比较方便实现过期释放。<br>
+<img src="/2022/09/09/springsession/SpringSession/image-1669761698049.png" alt="image.png"><br>
+优点<br>
+访问速度比较快。 虽然需要经过网络访问， 但是现在硬件条件已经能够达到网络访问比硬盘访问还要快。</p>
+<ul>
+<li>硬盘访问速度： 200M/s</li>
+<li>网络访问速度： 1G/s</li>
+</ul>
+<p>Redis 可以配置主从复制集群， 不担心单点故障。</p>
+<h3 id="13-springsession-使用"><a class="markdownIt-Anchor" href="#13-springsession-使用"></a> 1.3 SpringSession 使用</h3>
+<p><img src="/2022/09/09/springsession/SpringSession/image-1669761700481.png" alt="image.png"><br>
+表面上调用的原生的 getAttribute，实际上已经是被 springsession 包装了的。<br>
+SpringSession 允许使用各种库作为 session 的存储位置，redis 只是其中一种。<br>
+需要在 springboot 环境中使用，暂未研究 springmvc。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 引入springboot&amp;redis整合场景 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 引入springboot&amp;springsession整合场景 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.session<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-session-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>原理：SpringSession 从底层全方位“接管”了 Tomcat 对 Session 的管理。<br>
+<img src="/2022/09/09/springsession/SpringSession/image-1669761703240.png" alt="image.png"><br>
+<strong>SessionRepositoryFilter</strong><br>
+利用 Filter 原 理，在每次请求到达目标方法之前，将原生<code>HttpServletRequest/HttpServletResponse</code>对象包装为<code>SessionRepositoryRequest/ResponseWrapper</code>。<br>
+包装 request 对象时要做到： 包装后和包装前类型兼容。 所谓类型兼容：“包装得到的对象 instanceof 包装前类型” 返回 true。<br>
+只有做到了类型的兼容， 后面使用包装过的对象才能够保持使用方法不变。 包装过的对象类型兼容、 使用方法不变， 才能实现“偷梁换柱”。<br>
+但是如果直接实现 HttpServletRequest 接口， 我们又不知道如何实现各个抽象方法。 这个问题可以借助原始被包装的对象来解决：包装对象并不是凭空创建一个相同类型的对象， 而是借助原生对象的主体功能， 修改有特殊需要的功能。<br>
+<strong>HttpSessionStrategy</strong><br>
+封装 Session 的存取策略：cookie 还是 http headers 等方式。<br>
+<img src="/2022/09/09/springsession/SpringSession/image-1669761708008.png" alt="image.png"><br>
+<strong>SessionRepository</strong><br>
+指定存取/删除/过期 session 操作的 repository<br>
+<img src="/2022/09/09/springsession/SpringSession/image-1669761709545.png" alt="image.png"><br>
+<strong>RedisOperationsSessionRepository</strong><br>
+使用 Redis 将 session 保存维护起来</p>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%99%BB%E5%BD%95%E7%8A%B6%E6%80%81%E4%BF%9D%E6%8C%81%E5%8F%8A%E6%A3%80%E6%9F%A5"><span class="toc-text"> 1. 登录状态保持及检查</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#11-%E4%BC%9A%E8%AF%9D%E6%8E%A7%E5%88%B6%E6%9C%BA%E5%88%B6"><span class="toc-text"> 1.1 会话控制机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-session-%E5%85%B1%E4%BA%AB"><span class="toc-text"> 1.2 session 共享</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#121-session-%E5%90%8C%E6%AD%A5"><span class="toc-text"> 1.2.1 Session 同步</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#122-%E5%B0%86-session-%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E5%9C%A8-cookie-%E4%B8%AD"><span class="toc-text"> 1.2.2 将 Session 数据存储在 Cookie 中</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#123-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-hash-%E4%B8%80%E8%87%B4%E6%80%A7"><span class="toc-text"> 1.2.3 反向代理 hash 一致性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#124-%E5%90%8E%E7%AB%AF%E7%BB%9F%E4%B8%80%E5%AD%98%E5%82%A8-session-%E6%95%B0%E6%8D%AE"><span class="toc-text"> 1.2.4 后端统一存储 Session 数据</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-springsession-%E4%BD%BF%E7%94%A8"><span class="toc-text"> 1.3 SpringSession 使用</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://sk370.github.io/2022/09/09/springsession/SpringSession/">https://sk370.github.io/2022/09/09/springsession/SpringSession/</a></p>
+              <p>版权声明: 转载请注明出处。</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Session/" rel="tag">Spring Session</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2022/09/06/thymeleaf/Thymeleaf/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          Thymeleaf
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/10/01/shiro/Shiro/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          Shiro
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/12/03/blog/hexo/">Hexo + GitHub Pages搭建静态博客</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/29/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/">性能监控</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/29/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95/">压力测试</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/29/springcloud/SpringCloudGateway/">Spring Cloud Gateway</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/29/springcloud/SpringCloudFeign/">Spring Cloud Feign</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/Dubbo/" style="font-size: 10px;">Dubbo</a> <a href="/tags/EhCache/" style="font-size: 10px;">EhCache</a> <a href="/tags/ElasticSearch/" style="font-size: 10px;">ElasticSearch</a> <a href="/tags/JMeter/" style="font-size: 10px;">JMeter</a> <a href="/tags/JSP/" style="font-size: 10px;">JSP</a> <a href="/tags/JUC/" style="font-size: 10px;">JUC</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Java8/" style="font-size: 10px;">Java8</a> <a href="/tags/JavaWeb/" style="font-size: 10px;">JavaWeb</a> <a href="/tags/Kubernetes/" style="font-size: 10px;">Kubernetes</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MyBatis/" style="font-size: 10px;">MyBatis</a> <a href="/tags/MyBatis-Plus/" style="font-size: 10px;">MyBatis-Plus</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/SSM/" style="font-size: 10px;">SSM</a> <a href="/tags/Shiro/" style="font-size: 10px;">Shiro</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Alibaba/" style="font-size: 10px;">Spring Cloud Alibaba</a> <a href="/tags/Spring-Cloud-Feign/" style="font-size: 10px;">Spring Cloud Feign</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 10px;">Spring Cloud Gateway</a> <a href="/tags/Spring-MVC/" style="font-size: 10px;">Spring MVC</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/Spring-Session/" style="font-size: 10px;">Spring Session</a> <a href="/tags/Spring5/" style="font-size: 10px;">Spring5</a> <a href="/tags/Srping-Boot2/" style="font-size: 10px;">Srping Boot2</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/jconsole/" style="font-size: 10px;">jconsole</a> <a href="/tags/jvisualvm/" style="font-size: 10px;">jvisualvm</a> <a href="/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%A1%86%E6%9E%B6/" style="font-size: 10px;">分布式框架</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" style="font-size: 10px;">分布式理论</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Dubbo/">Dubbo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticSearch/">ElasticSearch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaWeb/">JavaWeb</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E6%96%B0%E7%89%B9%E6%80%A7/">Java新特性</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/">MyBatis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis-Plus/">MyBatis-Plus</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SSM/">SSM</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shiro/">Shiro</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Cloud/">Spring Cloud</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Cloud-Alibaba/">Spring Cloud Alibaba</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Framework/">Spring Framework</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Security/">Spring Security</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Session/">Spring Session</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Srping-Boot/">Srping Boot</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95/">压力测试</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF/">容器技术</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/">性能监控</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8A%80%E6%9C%AF%E7%90%86%E8%AE%BA/">技术理论</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/">搭建博客</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7/">构建工具</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E/">模板引擎</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%93%E5%AD%98/">缓存</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022年</a><span class="archive-list-count">36</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dubbo/" rel="tag">Dubbo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EhCache/" rel="tag">EhCache</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JMeter/" rel="tag">JMeter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JSP/" rel="tag">JSP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JUC/" rel="tag">JUC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/" rel="tag">Java8</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaWeb/" rel="tag">JavaWeb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kubernetes/" rel="tag">Kubernetes</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/" rel="tag">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis-Plus/" rel="tag">MyBatis-Plus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSM/" rel="tag">SSM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shiro/" rel="tag">Shiro</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/" rel="tag">Spring Cloud</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud-Alibaba/" rel="tag">Spring Cloud Alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud-Feign/" rel="tag">Spring Cloud Feign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud-Gateway/" rel="tag">Spring Cloud Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-MVC/" rel="tag">Spring MVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/" rel="tag">Spring Security</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Session/" rel="tag">Spring Session</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring5/" rel="tag">Spring5</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Srping-Boot2/" rel="tag">Srping Boot2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jconsole/" rel="tag">jconsole</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jvisualvm/" rel="tag">jvisualvm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zookeeper/" rel="tag">zookeeper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%A1%86%E6%9E%B6/" rel="tag">分布式框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" rel="tag">分布式理论</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 SK370.</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+  </div>
+  
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+    
+<script src="/localshare/js/social-share.js"></script>
+
+    
+<script src="/localshare/js/qrcode.js"></script>
+
+  
+  
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+</body>
+</html>

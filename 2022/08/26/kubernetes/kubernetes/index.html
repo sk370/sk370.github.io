@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Kubernetes | SK370 博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  
+    <meta name="keywords" content="SK370, JAVA, 博客">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="SK370 博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">SK370 博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">SK370的个人博客</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-kubernetes/kubernetes" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Kubernetes
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2022-08-26T09:54:29.000Z" itemprop="datePublished">2022年08月26日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF/">容器技术</a>
+  </div>
+
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2022/08/26/kubernetes/kubernetes/#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><em>Kubernetes，简称K8s，是用8代替名字中间的8个字符“ubernete”而成的缩写。是一个开源的，用于管理云平台中多个主机上的容器化的应用，Kubernetes的目标是让部署容器化的应用简单并且高效（powerful）,Kubernetes提供了应用部署，规划，更新，维护的一种机制。</em></p>
+<span id="more"></span>
+<h2 id="1-介绍"><a class="markdownIt-Anchor" href="#1-介绍"></a> 1. 介绍</h2>
+<h3 id="11-出现原因"><a class="markdownIt-Anchor" href="#11-出现原因"></a> 1.1 出现原因</h3>
+<p><img src="/2022/08/26/kubernetes/kubernetes/image-1669756281398.png" alt><br>
+传统部署：应用部署在一台主机上，一个应用的问题会扩散至整个主机上时，会导致整个主机崩溃，导致整个应用系统不可用。</p>
+<p>虚拟化部署：应用部署在不同的虚拟机上，减小了应用问题影响的范围，但虚拟机太笨重，占用了过多的主机资源。</p>
+<p>容器化部署：既达到了虚拟化部署的优点，同时由于容器占用资源小的优点，解决了大多数问题。但是业务庞大时，容器会部署过多，管理会存在很大的难度。所以急需一个对大量容器管理的系统——容器编排系统。</p>
+<h3 id="12-kubernetes-特性"><a class="markdownIt-Anchor" href="#12-kubernetes-特性"></a> 1.2 Kubernetes 特性</h3>
+<ul>
+<li><strong>服务发现和负载均衡</strong><br>
+Kubernetes 可以使用 DNS 名称或自己的 IP 地址公开容器，如果进入容器的流量很大， Kubernetes 可以负载均衡并分配网络流量，从而使部署稳定。</li>
+<li><strong>存储编排</strong><br>
+Kubernetes 允许你自动挂载你选择的存储系统，例如本地存储、公共云提供商等。</li>
+<li><strong>自动部署和回滚</strong><br>
+你可以使用 Kubernetes 描述已部署容器的所需状态，它可以以受控的速率将实际状态 更改为期望状态。例如，你可以自动化 Kubernetes 来为你的部署创建新容器， 删除现有容器并将它们的所有资源用于新容器。</li>
+<li><strong>自动完成装箱计算</strong><br>
+Kubernetes 允许你指定每个容器所需 CPU 和内存（RAM）。 当容器指定了资源请求时，Kubernetes 可以做出更好的决策来管理容器的资源。</li>
+<li><strong>自我修复</strong><br>
+Kubernetes 重新启动失败的容器、替换容器、杀死不响应用户定义的 运行状况检查的容器，并且在准备好服务之前不将其通告给客户端。</li>
+<li><strong>密钥与配置管理</strong><br>
+Kubernetes 允许你存储和管理敏感信息，例如密码、OAuth 令牌和 ssh 密钥。 你可以在不重建容器镜像的情况下部署和更新密钥和应用程序配置，也无需在堆栈配置中暴露密钥。</li>
+</ul>
+<h3 id="13-架构"><a class="markdownIt-Anchor" href="#13-架构"></a> 1.3 架构</h3>
+<ol>
+<li>工作方式：<code>Kubernetes Cluster = N * Master Node + N * Worker * Node</code>（N 主节点+N 工作节点， N&gt;=1）</li>
+<li>Kubernetes Cluister：k8s 集群——集团公司<br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756278012.png" alt>
+<ul>
+<li>Controll plane：Control Plane Components，控制平面组件——集团公司总部
+<ul>
+<li>c-m：控制器管理器——决策领导</li>
+<li>etcd：键值数据库——公司资料库</li>
+<li>api：kube-apiserver，控制面的前端——给领导干活儿的秘书</li>
+<li>sched：kube-scheduler，监视、调度节点——调度</li>
+<li>c-c-m：cloud-controller-manaager，云控制器管理器——商务部门</li>
+</ul>
+</li>
+<li>Node：节点——分公司
+<ul>
+<li>kubelet：——分公司总经理</li>
+<li>kube-proxy：——门卫大爷，他们之间保持通信<br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756275102.png" alt="image.png"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="2-安装-docker"><a class="markdownIt-Anchor" href="#2-安装-docker"></a> 2. 安装 docker</h2>
+<h3 id="21-开-3-个云服务器"><a class="markdownIt-Anchor" href="#21-开-3-个云服务器"></a> 2.1 开 3 个云服务器</h3>
+<p>选择任意云服务，购买 2 核 4g 的服务区 3 台（因为集群最少 3 台）。本例选择腾讯云，因为原先有账号。<br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756272307.png" alt="image.png"><img src="/2022/08/26/kubernetes/kubernetes/image-1669756266953.png" alt="image.png"><br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756264609.png" alt="image.png"><br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756262068.png" alt="image.png"><br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756259722.png" alt="image.png"></p>
+<p>腾讯云特点：</p>
+<ul>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756257570.png" alt="image.png"></li>
+</ul>
+<p>网络测试：</p>
+<ul>
+<li>本地主机 ping3 台远程主机的公网 ip 和私网 ip
+<ul>
+<li>公网 ip：<img src="/2022/08/26/kubernetes/kubernetes/image-1669756255092.png" alt="image.png"></li>
+<li>私网 ip：<img src="/2022/08/26/kubernetes/kubernetes/image-1669756252825.png" alt="image.png"></li>
+</ul>
+</li>
+<li>远程主机互相 ping 公网 ip 和私网 ip
+<ul>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756249887.png" alt="image.png"></li>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756246096.png" alt="image.png"></li>
+</ul>
+</li>
+</ul>
+<h3 id="22-本地连接到-3-台服务区并安装-docker"><a class="markdownIt-Anchor" href="#22-本地连接到-3-台服务区并安装-docker"></a> 2.2 本地连接到 3 台服务区并安装 docker</h3>
+<ol>
+<li>准备工作——实现一个窗口输入，另外两个也完成输入
+<ul>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756242156.png" alt="image.png"></li>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756239730.png" alt="image.png"></li>
+</ul>
+</li>
+<li>配置 yum 源</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils</span><br><span class="line">sudo yum-config-manager \</span><br><span class="line">--add-repo \</span><br><span class="line">http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>安装 docker</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y docker-ce docker-ce-cli containerd.io</span><br><span class="line"></span><br><span class="line"><span class="comment">#以下是在安装k8s的时候使用（本测试指定版本）</span></span><br><span class="line">yum install -y docker-ce-20.10.7 docker-ce-cli-20.10.7  containerd.io-1.4.6</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>启动（设置开机启动并让本次启动立即生效）</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> docker --now</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>配置阿里云加速</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">mkdir</span> -p /etc/docker</span><br><span class="line">sudo <span class="built_in">tee</span> /etc/docker/daemon.json &lt;&lt;-<span class="string">&#x27;EOF&#x27;</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;registry-mirrors&quot;</span>: [<span class="string">&quot;https://bnzui6g7.mirror.aliyuncs.com&quot;</span>]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+<h2 id="3-kubeadm-创建集群"><a class="markdownIt-Anchor" href="#3-kubeadm-创建集群"></a> 3. kubeadm 创建集群</h2>
+<h3 id="31-集群架构"><a class="markdownIt-Anchor" href="#31-集群架构"></a> 3.1 集群架构</h3>
+<p><img src="/2022/08/26/kubernetes/kubernetes/image-1669756232515.png" alt="image.png"><br>
+master、node 节点均需要：</p>
+<ul>
+<li>kubelet、kubeadm、kubectl</li>
+</ul>
+<p>master 节点需要：</p>
+<ul>
+<li>kube-apiserver、kube-proxy、kube-controller-manager、kube-scheduler、coredns、etcd、pause。</li>
+</ul>
+<p>node 节点需要：</p>
+<ul>
+<li>kube-proxy</li>
+</ul>
+<h3 id="32-准备工作"><a class="markdownIt-Anchor" href="#32-准备工作"></a> 3.2 准备工作</h3>
+<p>Kubernetes 项目为基于 Debian 和 Red Hat 的 Linux 发行版以及一些不提供包管理器的发行版提供通用的指令，但官方要求：</p>
+<ul>
+<li>每台机器 2 GB 或更多的 RAM （如果少于这个数字将会影响你应用的运行内存)</li>
+<li>2 CPU 核或更多</li>
+<li>集群中的所有机器的网络彼此均能相互连接(公网和内网都可以)
+<ul>
+<li><strong>设置防火墙放行规则</strong>（虚拟机互相 ping 公网 ip 或私网 ip）</li>
+</ul>
+</li>
+<li>节点之中不可以有重复的主机名、MAC 地址或 product_uuid。请参见<a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#verify-mac-address">这里</a>了解更多详细信息。
+<ul>
+<li><strong>设置不同 hostname：</strong><code>hostnamectl set-hostname xxx</code></li>
+<li><strong>分别命名为 k8s-master、k8s-node1、k8s-node2</strong></li>
+</ul>
+</li>
+<li>开启机器上的某些端口。请参见<a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports">这里</a> 了解更多详细信息。
+<ul>
+<li><strong>内网互信</strong></li>
+</ul>
+</li>
+<li>禁用交换分区。为了保证 kubelet 正常工作，你 <strong>必须</strong> 禁用交换分区。
+<ul>
+<li><strong>永久关闭</strong></li>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756228729.png" alt="image.png"></li>
+</ul>
+</li>
+<li>禁用 SELinux</li>
+<li>允许 iptables 检查桥接流量（将 ipv6 的流量转到 ipv4，便于统计）</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#各个机器设置自己的域名</span></span><br><span class="line">hostnamectl set-hostname xxxx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将 SELinux 设置为 permissive 模式（相当于将其禁用）</span></span><br><span class="line">sudo setenforce 0</span><br><span class="line">sudo sed -i <span class="string">&#x27;s/^SELINUX=enforcing$/SELINUX=permissive/&#x27;</span> /etc/selinux/config</span><br><span class="line"></span><br><span class="line"><span class="comment">#关闭swap</span></span><br><span class="line">swapoff -a</span><br><span class="line">sed -ri <span class="string">&#x27;s/.*swap.*/#&amp;/&#x27;</span> /etc/fstab</span><br><span class="line"></span><br><span class="line"><span class="comment">#允许 iptables 检查桥接流量</span></span><br><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">EOF | sudo tee /etc/modules-load.d/k8s.conf</span></span><br><span class="line"><span class="string">br_netfilter</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">EOF | sudo tee /etc/sysctl.d/k8s.conf</span></span><br><span class="line"><span class="string">net.bridge.bridge-nf-call-ip6tables = 1</span></span><br><span class="line"><span class="string">net.bridge.bridge-nf-call-iptables = 1</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line">sudo sysctl --system</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="33-安装-kubelet-kubeadm-kubectl"><a class="markdownIt-Anchor" href="#33-安装-kubelet-kubeadm-kubectl"></a> 3.3 安装 kubelet、kubeadm、kubectl</h3>
+<blockquote>
+<p>官方教程：<br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756225656.png" alt="image.png"></p>
+</blockquote>
+<ul>
+<li>kubelet 是在每个 Node 节点上运行的主要 “节点代理”。</li>
+<li>kubeadm 是官方社区推出的一个用于快速部署 kubernetes 集群的工具</li>
+<li>kubectl 是使用 Kubernetes API 与 Kubernetes 集群的控制面进行通信的命令行工具。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置k8s下载地址</span></span><br><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">EOF | sudo tee /etc/yum.repos.d/kubernetes.repo</span></span><br><span class="line"><span class="string">[kubernetes]</span></span><br><span class="line"><span class="string">name=Kubernetes</span></span><br><span class="line"><span class="string">baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64</span></span><br><span class="line"><span class="string">enabled=1</span></span><br><span class="line"><span class="string">gpgcheck=0</span></span><br><span class="line"><span class="string">repo_gpgcheck=0</span></span><br><span class="line"><span class="string">gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg</span></span><br><span class="line"><span class="string">   http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg</span></span><br><span class="line"><span class="string">exclude=kubelet kubeadm kubectl</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装kubelet、kubeadm、kubectl</span></span><br><span class="line">sudo yum install -y kubelet-1.20.9 kubeadm-1.20.9 kubectl-1.20.9 --disableexcludes=kubernetes</span><br><span class="line"><span class="comment"># 设置开机启动并立即重启</span></span><br><span class="line">sudo systemctl <span class="built_in">enable</span> --now kubelet</span><br><span class="line"><span class="comment"># 查看kubelet服务状态</span></span><br><span class="line">systemctl status kubelet</span><br></pre></td></tr></table></figure>
+<p><img src="/2022/08/26/kubernetes/kubernetes/image-1669756222595.png" alt="image.png"><br>
+安装后效果：kubelet 现在每隔几秒就会重启，因为它陷入了一个等待 kubeadm 指令的死循环。</p>
+<h3 id="34-下载节点镜像文件"><a class="markdownIt-Anchor" href="#34-下载节点镜像文件"></a> 3.4 下载节点镜像文件</h3>
+<p>一个 k8s-master 节点需要 kube-apiserver、kube-proxy、kube-controller-manager、kube-scheduler、coredns、etcd、pause。</p>
+<p>k8s-node 节点需要 kube-proxy。而 kubelet 是运行在虚拟机上的，其他部分是运行在容器内的，所以为了下载顺利，下面的流程先建立了一个下载上述镜像文件的可执行脚本<code>./images.sh</code>，并赋予了可执行权限进行下载。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建脚本</span></span><br><span class="line">sudo <span class="built_in">tee</span> ./images.sh &lt;&lt;-<span class="string">&#x27;EOF&#x27;</span></span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line">images=(</span><br><span class="line">kube-apiserver:v1.20.9</span><br><span class="line">kube-proxy:v1.20.9</span><br><span class="line">kube-controller-manager:v1.20.9</span><br><span class="line">kube-scheduler:v1.20.9</span><br><span class="line">coredns:1.7.0</span><br><span class="line">etcd:3.4.13-0</span><br><span class="line">pause:3.2</span><br><span class="line">)</span><br><span class="line"><span class="keyword">for</span> imageName <span class="keyword">in</span> <span class="variable">$&#123;images[@]&#125;</span> ; <span class="keyword">do</span></span><br><span class="line">docker pull registry.cn-hangzhou.aliyuncs.com/lfy_k8s_<span class="variable">$imageName</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="comment"># master节点赋予权限并执行</span></span><br><span class="line"><span class="built_in">chmod</span> +x ./images.sh &amp;&amp; ./images.sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># node节点执行</span></span><br><span class="line">docker pull registry.cn-hangzhou.aliyuncs.com/lfy_k8s_kube-proxy</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>注意：这里<code>docker-pull</code>使用了 lfy 的阿里云镜像仓库。类似下面这种。</li>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756218703.png" alt="image.png"></li>
+<li>这里建议使用 lfy 的仓库，因为镜像的名字是他设计的，别人没有。</li>
+</ul>
+</blockquote>
+<p><img src="/2022/08/26/kubernetes/kubernetes/image-1669756216532.png" alt="image.png"></p>
+<h3 id="35-初始化主节点"><a class="markdownIt-Anchor" href="#35-初始化主节点"></a> 3.5 初始化主节点</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#所有机器添加master域名映射，声明谁是master节点：私有ip要修改为自己的</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;172.31.0.12  cluster-endpoint&quot;</span> &gt;&gt; /etc/hosts</span><br><span class="line"></span><br><span class="line"><span class="comment">#主节点初始化</span></span><br><span class="line">kubeadm init \</span><br><span class="line">--apiserver-advertise-address=172.31.0.12 \</span><br><span class="line">--control-plane-endpoint=cluster-endpoint \</span><br><span class="line">--image-repository registry.cn-hangzhou.aliyuncs.com/lfy_k8s_images \</span><br><span class="line">--kubernetes-version v1.20.9 \</span><br><span class="line">--service-cidr=10.96.0.0/16 \</span><br><span class="line">--pod-network-cidr=192.168.0.0/16</span><br><span class="line"></span><br><span class="line"><span class="comment">#所有网络范围不重叠——指上述ip（下面两个ip保持默认，其中192.168.0.0/16是为了适配master节点安装calico）</span></span><br></pre></td></tr></table></figure>
+<p>设定完 master 节点后，可以<code>ping cluster-endpoint</code>测试是否接通：<br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756211983.png" alt="image.png"><br>
+主节点安装完成后：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Your Kubernetes control-plane has initialized successfully!</span><br><span class="line"></span><br><span class="line">To start using your cluster, you need to run the following as a regular user:</span><br><span class="line"></span><br><span class="line">  <span class="built_in">mkdir</span> -p <span class="variable">$HOME</span>/.kube</span><br><span class="line">  sudo <span class="built_in">cp</span> -i /etc/kubernetes/admin.conf <span class="variable">$HOME</span>/.kube/config</span><br><span class="line">  sudo <span class="built_in">chown</span> $(<span class="built_in">id</span> -u):$(<span class="built_in">id</span> -g) <span class="variable">$HOME</span>/.kube/config</span><br><span class="line"></span><br><span class="line">Alternatively, <span class="keyword">if</span> you are the root user, you can run:</span><br><span class="line"></span><br><span class="line">  <span class="built_in">export</span> KUBECONFIG=/etc/kubernetes/admin.conf</span><br><span class="line"></span><br><span class="line">You should now deploy a pod network to the cluster.</span><br><span class="line">Run <span class="string">&quot;kubectl apply -f [podnetwork].yaml&quot;</span> with one of the options listed at:</span><br><span class="line">  https://kubernetes.io/docs/concepts/cluster-administration/addons/</span><br><span class="line"></span><br><span class="line">You can now <span class="built_in">join</span> any number of control-plane nodes by copying certificate authorities</span><br><span class="line">and service account keys on each node and <span class="keyword">then</span> running the following as root:</span><br><span class="line"></span><br><span class="line">  kubeadm <span class="built_in">join</span> cluster-endpoint:6443 --token y53lrq.sca3goa3xm11y94q \</span><br><span class="line">    --discovery-token-ca-cert-hash sha256:985e0f6815ee7b4f9b70c0d7cfc899ffaa7b4577c817ce6acbf925059d535030 \</span><br><span class="line">    --control-plane</span><br><span class="line"></span><br><span class="line">Then you can <span class="built_in">join</span> any number of worker nodes by running the following on each as root:</span><br><span class="line"></span><br><span class="line">kubeadm <span class="built_in">join</span> cluster-endpoint:6443 --token y53lrq.sca3goa3xm11y94q \</span><br><span class="line">    --discovery-token-ca-cert-hash sha256:985e0f6815ee7b4f9b70c0d7cfc899ffaa7b4577c817ce6acbf925059d535030</span><br></pre></td></tr></table></figure>
+<p>根据提示执行如下命令（步骤一）：<br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756207673.png" alt="image.png"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p <span class="variable">$HOME</span>/.kube</span><br><span class="line">sudo <span class="built_in">cp</span> -i /etc/kubernetes/admin.conf <span class="variable">$HOME</span>/.kube/config</span><br><span class="line">sudo <span class="built_in">chown</span> $(<span class="built_in">id</span> -u):$(<span class="built_in">id</span> -g) <span class="variable">$HOME</span>/.kube/config</span><br></pre></td></tr></table></figure>
+<p>安装网络组件，这里选择<a target="_blank" rel="noopener" href="https://docs.projectcalico.org/getting-started/kubernetes/self-managed-onprem/onpremises#install-calico-with-kubernetes-api-datastore-more-than-50-nodes">calico 官网</a>（步骤二）：<br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756204323.png" alt="image.png"></p>
+<ul>
+<li>下载 calico 配置文件：<code>curl [https://docs.projectcalico.org/manifests/calico.yaml](https://docs.projectcalico.org/manifests/calico.yaml) -O</code></li>
+<li><code>curl https://docs.projectcalico.org/v3.20/manifests/calico.yaml -O</code></li>
+<li>安装 calico：<code>kubectl apply -f calico.yaml</code></li>
+</ul>
+<blockquote>
+<p>小总结：</p>
+<p>运行中的应用在 docker 里面叫容器，在 k8s 里面叫 Pod<br>
+kubetcl 常用命令：</p>
+<ul>
+<li>查看节点状态（只能在主节点运行）：<code>kubectl get nodes</code>
+<ul>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756200305.png" alt="image.png"></li>
+</ul>
+</li>
+<li>根据配置文件，给集群创建资源：<code>kubectl apply -f xxxx.yaml</code></li>
+<li>查看集群部署了哪些应用（pod）：<code>kubectl get pods -A</code>
+<ul>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756195336.png" alt="image.png"></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="35-node-节点加入-master"><a class="markdownIt-Anchor" href="#35-node-节点加入-master"></a> 3.5 node 节点加入 master</h3>
+<p>根据 master 节点安装完的提示：<br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756192905.png" alt="image.png"><br>
+在 node1 和 node2 中执行（该命令有 24 小时有效期，如果过期了可以在 master 节点执行<code>kubeadm token create --print-join-command</code>重新获取：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubeadm <span class="built_in">join</span> cluster-endpoint:6443 --token y53lrq.sca3goa3xm11y94q \</span><br><span class="line">    --discovery-token-ca-cert-hash sha256:985e0f6815ee7b4f9b70c0d7cfc899ffaa7b4577c817ce6acbf925059d535030</span><br></pre></td></tr></table></figure>
+<p>遇到报错：</p>
+<ul>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756188682.png" alt="image.png"></li>
+<li>node1、node2 执行：<code>sysctl -w net.ipv4.ip_forward=1</code></li>
+<li>网上解释：Linux 系统默认是禁止数据包转发的。所谓转发即当主机拥有多于一块的网卡时，其中一块收到数据包，根据数据包的目的 ip 地址将包发往本机另一网卡，该网卡根据<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E8%B7%AF%E7%94%B1%E8%A1%A8&amp;spm=1001.2101.3001.7020">路由表</a>继续发送数据包。</li>
+</ul>
+<p>在主节点查看节点状态``：</p>
+<ul>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756186340.png" alt="image.png"></li>
+</ul>
+<h3 id="36-集群的自我修复"><a class="markdownIt-Anchor" href="#36-集群的自我修复"></a> 3.6 集群的自我修复</h3>
+<p>机器宕机后，重启集群可恢复。可以看到 AGE 延续的之前，STATUS 在逐渐恢复到 Running。<br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756183919.png" alt="image.png"></p>
+<h3 id="37-k8s-可视化界面"><a class="markdownIt-Anchor" href="#37-k8s-可视化界面"></a> 3.7 k8s 可视化界面</h3>
+<p>dashboard 是 k8s 官方提供的 web 可视化界面：</p>
+<ol>
+<li>安装命令（在 master 节点执行）：
+<ul>
+<li>下载配置文件并安装：<code>kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.3.1/aio/deploy/recommended.yaml</code></li>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756181400.png" alt="image.png"></li>
+</ul>
+</li>
+<li>设置访问端口：
+<ul>
+<li>暴露端口：<code>kubectl edit svc kubernetes-dashboard -n kubernetes-dashboard</code>
+<ul>
+<li>type: ClusterIP 改为 type: NodePort</li>
+</ul>
+</li>
+<li>查看暴露的端口：<code>kubectl get svc -A |grep kubernetes-dashboard</code>
+<ul>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756174651.png" alt="image.png"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在云服务器安全组中找到找到端口，在安全组放行上面的 32428 端口
+<ul>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756169480.png" alt="image.png"></li>
+<li>现在即可使用 k8s 集群的任意一台公网 ip+端口号即可访问</li>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756164142.png" alt="image.png"></li>
+<li>为啥我只有子节点的 ip 能访问？</li>
+</ul>
+</li>
+<li>创建访问者账号：
+<ul>
+<li><code>vi dash-user.yaml</code></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#创建访问账号，准备一个yaml文件； vi dash-user.yaml</span></span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: ServiceAccount</span><br><span class="line">metadata:</span><br><span class="line">  name: admin-user</span><br><span class="line">  namespace: kubernetes-dashboard</span><br><span class="line">---</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: ClusterRoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  name: admin-user</span><br><span class="line">roleRef:</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">  kind: ClusterRole</span><br><span class="line">  name: cluster-admin</span><br><span class="line">subjects:</span><br><span class="line">- kind: ServiceAccount</span><br><span class="line">  name: admin-user</span><br><span class="line">  namespace: kubernetes-dashboard</span><br></pre></td></tr></table></figure>
+<ul>
+<li>执行<code>kubectl apply -f dash-user.yaml</code></li>
+<li><img src="/2022/08/26/kubernetes/kubernetes/2022-12-01-17-10-20.png" alt></li>
+</ul>
+</li>
+<li>获取 token 令牌：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#获取访问令牌</span></span><br><span class="line">kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath=<span class="string">&quot;&#123;.secrets[0].name&#125;&quot;</span>) -o go-template=<span class="string">&quot;&#123;&#123;.data.token | base64decode&#125;&#125;&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eyJhbGciOiJSUzI1NiIsImtpZCI6IjR5RUhNVExPeXJORmkyaHFWWDNTMFBoZi1zbmVuRm0tY2ZMc1M3S1dPUDAifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuLXE3Z25iIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJhYTMxYmNkNi03NmM1LTRjNDUtOTM2Mi0xNzEwNjdlM2FjZGMiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6YWRtaW4tdXNlciJ9.pXvfXxXF_PsjeWLhCJWim2Amqus8zi1LwEWMiUNz4ECp7nTKVJ-bV8vZXvHjcPA3m5k3WKpvbW-5rVnGTjBTik_9-eCkY2QFrQlJHo3PEP2ggpbp-IdCd7fW8uBmM0tNeb0nhI4QIqwTJOaZ3xC9aB6w4gl06227VT-5Eq7b3L18NyudIe_wE7wq4oYjJxMwfC52UpXMdeUw5WVyDPK1CvB1l7jydZV8jpCXprcK-aSC_yyyjbDDPZp31olnSIfcIVmUsgKz0Y2HtNNaMBjeenKya9lgUdLijYnq7cvUDznY-D7oftGqApdZcpN4OzbfBvIel-iRJKKdvbcTQT4jxA[r</span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>将生成的令牌代码输入 dashboard：
+<ul>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756157033.png" alt="image.png"></li>
+<li>我在 master 节点生成的 token，这个 dashboard 是 node1 节点，不知道是不是这个原因，反正登录不了。</li>
+</ul>
+</li>
+</ol>
+<h2 id="4-k8s-资源理解"><a class="markdownIt-Anchor" href="#4-k8s-资源理解"></a> 4. k8s 资源理解</h2>
+<h3 id="41-创建资源方式"><a class="markdownIt-Anchor" href="#41-创建资源方式"></a> 4.1 创建资源方式</h3>
+<ul>
+<li>yaml 文件
+<ul>
+<li><code>kubectl apply -f xxxx.yaml</code></li>
+</ul>
+</li>
+<li>命令行</li>
+</ul>
+<h3 id="42-namespace"><a class="markdownIt-Anchor" href="#42-namespace"></a> 4.2 namespace</h3>
+<p>名称空间：用来隔离资源，不隔离网络。<br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756151190.png" alt="image.png"><br>
+命令行操作：</p>
+<ul>
+<li><code>kubectl get ns</code>或<code>kubectl get namespace</code>获取当前所有的名称空间
+<ul>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756153676.png" alt="image.png"></li>
+</ul>
+</li>
+<li><code>kubectl get pods</code>获取 default 名称空间下的 pods</li>
+<li><code>kubectl get pods -A</code>获取所有名称空间下的 pods</li>
+<li><code>kubectl create ns xxx</code>创建名称空间</li>
+<li><code>kubectl delete ns xxx</code>删除名称空间（会将该名称空间下的资源一同删除）</li>
+</ul>
+<p>配置文件操作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Namespace</span><br><span class="line">metadata:</span><br><span class="line">  name: xxxx</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>kubectl delete -f xxxx.yaml</code>：删除 xxxx.yaml 文件创建的名称空间及资源。</li>
+</ul>
+<h3 id="43-pod"><a class="markdownIt-Anchor" href="#43-pod"></a> 4.3 Pod</h3>
+<p>运行中的一组容器， Pod 是 kubernetes 中应用的最小单位。<br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756147932.png" alt="image.png"><br>
+pod 是对 docker 中的多个 container 的封装吗？一个 docker 里有多个 pod 吗？<br>
+是的。是的。【2022.08.27】<br>
+命令行操作：</p>
+<ul>
+<li><code>kubectl run mynginx --image=nginx</code>：从镜像文件创建并运行 nginx，并命名为 mynginx。不指定名称空间是，默认为 default</li>
+<li><code>kubectl describe mynginx</code>：查看 mynginx 这个 pod 的详细运行信息</li>
+<li><code>kubectl delete pod Pod名字</code>：删除 pod</li>
+<li><code>kubectl get pod -owide</code>：查看 k8s 给每个 pod 分配的 ip，主要是-owide 参数
+<ul>
+<li><code>kubectl get pod -w</code>：持续监控并在控制台打印变化过程</li>
+</ul>
+</li>
+<li><code>curl 192.168.169.136</code>集群中的每个 pod，k8s 都会给它分配一个 ip，使用 Pod 的 ip+pod 的端口，就能访问到里面运行容器</li>
+<li><code>kubectl exec -it mynginx -- /bin/bash</code></li>
+</ul>
+<p>配置文件操作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Pod</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    run: myapp</span><br><span class="line">  name: myapp</span><br><span class="line"><span class="comment">#  namespace: default</span></span><br><span class="line">spec:</span><br><span class="line">  containers:</span><br><span class="line">  - image: nginx</span><br><span class="line">    name: nginx</span><br><span class="line">  - image: tomcat:8.5.68 <span class="comment"># 镜像的名字</span></span><br><span class="line">    name: tomcat <span class="comment"># pod容器的名字</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>kubectl delete -f xxxx.yaml</code>：删除 xxxx.yaml 文件创建的 pod 及资源。</li>
+</ul>
+<p>pod 的访问具有以下特点：</p>
+<ul>
+<li>集群中的任意一个机器以及任意的应用都能通过 Pod 分配的 ip 来访问这个 Pod</li>
+<li>同一个 pod 容器中的不同应用，可以通过本地连接访问，他们共享本 pod 的内存，存储空间。</li>
+<li>同一个 pod 内的不同应用，不能安装两个同端口的应用，会报错。</li>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756143516.png" alt="image.png"></li>
+</ul>
+<h3 id="44-deployment"><a class="markdownIt-Anchor" href="#44-deployment"></a> 4.4 Deployment</h3>
+<p>表示一次部署，产生一个或多个 pod。具有自愈、故障转移、扩缩容等多种优势。</p>
+<ul>
+<li><code>kubectl create deployment mytomcat --image=tomcat:8.5.68</code>：创建应用
+<ul>
+<li>与<code>kubectl run mynginx --image=nginx</code>区别在于，部署的应用崩溃、被删除，会自动创建新的应用——即自愈能力。</li>
+</ul>
+</li>
+<li><code>kubectl delete deploy pod名</code>：删除 deployment 部署的应用</li>
+<li><code>kubectl get deploy</code>或 <code>kubectl get deployment</code>：查看 deployment 部署的应用</li>
+<li><code>kubectl create deployment my-dep --image=nginx --replicas=3</code>：多副本部署，3 表示 3 个 pod</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: apps/v1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    app: my-dep</span><br><span class="line">  name: my-dep</span><br><span class="line">spec:</span><br><span class="line">  replicas: 3</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: my-dep</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app: my-dep</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">      - image: nginx</span><br><span class="line">        name: nginx</span><br></pre></td></tr></table></figure>
+<ul>
+<li>扩缩容：
+<ul>
+<li><code>kubectl scale --replicas=5 deployment/my-dep</code>：部署 5 个名为 my-dp 的 pod（如果原先有 3 个，那就总数变为 5）
+<ul>
+<li>当 5 大于既有 pod 数量，称为扩容</li>
+<li>当 5 小于既有 pod 数量，称为缩容</li>
+</ul>
+</li>
+<li><code>kubectl edit deployment my-dep</code>：扩缩容的另一种操作
+<ul>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756139703.png" alt="image.png"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>自愈：比如应用在 docker 中意外停止，k8s 会自动重启——自愈。但是如果机器停机，k8s 在监控周期内（阈值 5 分钟），k8s 会在其他机器上创建一个新的 pod。
+<ul>
+<li>此时停机的机器重启会怎么样？</li>
+</ul>
+</li>
+<li>滚动更新（不停机维护、部署新版本后，旧版本暂时不下线，等到新版本生效了正常运行了再去更新）
+<ul>
+<li><code>kubectl set image deployment/my-dep nginx=nginx:1.16.1 --record</code>
+<ul>
+<li><code>nginx=nginx:1.16.1</code>是更新的新版本</li>
+<li><code>--record</code>记录本次更新</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>版本回退：
+<ul>
+<li><code>kubectl rollout history deployment/my-dep</code>：查看历史记录</li>
+<li><code>kubectl rollout history deployment/my-dep --revision=2</code>：查看第 2 次的历史记录</li>
+<li><code>kubectl rollout undo deployment/my-dep</code>：回滚(回到上次)</li>
+<li><code>kubectl rollout undo deployment/my-dep --to-revision=2</code>：</li>
+</ul>
+</li>
+</ul>
+<h3 id="45-工作负载"><a class="markdownIt-Anchor" href="#45-工作负载"></a> 4.5 工作负载</h3>
+<p>除了<code>Deployment</code>，k8s 还有 <code>StatefulSet</code> 、<code>DaemonSet</code> 、<code>Job</code> 等 类型资源。我们都称为 <code>工作负载</code>。</p>
+<p>有状态应用使用 <code>StatefulSet</code> 部署，无状态应用使用 <code>Deployment</code> 部署。<br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756136696.png" alt="image.png"></p>
+<h2 id="5-service"><a class="markdownIt-Anchor" href="#5-service"></a> 5. service</h2>
+<p>pod 的服务发现与负载均衡。相当于 pod 的网关入口，让原本需要通过 pod 的 IP 访问的资源，通过 service 的 ip 可以得到。<br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756134248.png" alt="image.png"></p>
+<h3 id="51-service"><a class="markdownIt-Anchor" href="#51-service"></a> 5.1 Service</h3>
+<ul>
+<li><code>kubectl expose deployment my-dep --port=8000 --target-port=80</code>：将 my-dep 部署的应用暴露端口，即访问 serv 的 ip+8000，相当于访问 my-dep 部署的应用的 ip+80（上图）</li>
+<li>等价于<code>kubectl expose deploy my-dep --port=8000 --target-port=80 --type=ClusterIP</code>
+<ul>
+<li>访问返回结果的的负载均衡方式是随机的
+<ul>
+<li>IP 的方式可以在集群内（3 个虚拟机上）、pod 容器内访问。【不可以在其他机器上访问】</li>
+</ul>
+</li>
+<li>service 的域名会自动生成：规则为<code>my-dep.default.svc</code>（服务名.所在名称空间.svc）
+<ul>
+<li>域名的方式只能在 pod 容器内（进入某一个确定的程序内，如 tomcat）访问，但不能在集群内（3 个虚拟机上）访问，更不能在其他机器上访问</li>
+</ul>
+</li>
+<li>deployment 部署的 pod 的有固定的标签，service 通过这个标签可以发现应用，可以通过<code>kubectl get pod --show -labels</code>查看</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">my-dep</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">my-dep</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">my-dep</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8000</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>kubectl get service</code>：获取服务的信息，可以查看 my-dep 的 ip</li>
+<li>service 部署的 ip 容器下线后不会再访问到，但是重新上线（本 pod 扩缩容）就又可以访问到</li>
+</ul>
+<h3 id="52-service-nodeport"><a class="markdownIt-Anchor" href="#52-service-nodeport"></a> 5.2 service-nodeport</h3>
+<p><img src="/2022/08/26/kubernetes/kubernetes/image-1669756129924.png" alt="image.png"></p>
+<ul>
+<li><code>kubectl expose deployment my-dep --port=8000 --target-port=80 --type=NodePort</code>：通过任意节点的 ip+外部端口（如 30948）就可以访问到集群内的所有应用。</li>
+<li>比较<code>type=NodePort</code>和<code>type=ClusterIP</code>
+<ul>
+<li><code>type=ClusterIP</code>暴露的端口只能在集群内访问</li>
+<li><code>type=NodePort</code>暴露的端口能在任意外部访问</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">my-dep</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">my-dep</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8000</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">80</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">my-dep</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">NodePort</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>NodePort 范围在 30000-32767 之间</p>
+</blockquote>
+<h2 id="6-ingress"><a class="markdownIt-Anchor" href="#6-ingress"></a> 6. Ingress</h2>
+<h3 id="61-介绍"><a class="markdownIt-Anchor" href="#61-介绍"></a> 6.1 介绍</h3>
+<p>service 的统一网关入口。service 相当于 pod 的统一网关入口，让原本需要通过 service 的 IP 访问的资源，通过 ingress（集群？）的 ip 可以得到。</p>
+<p>ingress 底层是 nginx 做的，k8s 默认不带，需要手动安装。<br>
+<img src="/2022/08/26/kubernetes/kubernetes/image-1669756125990.png" alt="image.png"></p>
+<h3 id="62-安装"><a class="markdownIt-Anchor" href="#62-安装"></a> 6.2 安装</h3>
+<ol>
+<li>执行步骤</li>
+</ol>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.47.0/deploy/static/provider/baremetal/deploy.yaml</span><br><span class="line"></span><br><span class="line"><span class="comment">#修改镜像</span></span><br><span class="line">vi deploy.yaml</span><br><span class="line"><span class="comment">#将image的值改为如下值：</span></span><br><span class="line">registry.cn-hangzhou.aliyuncs.com/lfy_k8s_ingress-nginx-controller:v0.46.0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查安装的结果</span></span><br><span class="line">kubectl get pod,svc -n ingress-nginx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 最后别忘记在服务器上把svc暴露的端口要放行</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p>本例中没有执行<code>wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.47.0/deploy/static/provider/baremetal/deploy.yaml</code>，直接创建的 yaml 文件，因为怕下载不下来耽搁时间。</p>
+</li>
+<li>
+<p>yaml 文件内容如下（已修改 image 镜像地址为 lfy 的）</p>
+</li>
+</ul>
+<details>
+  <summary>不用点开</summary>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br><span class="line">468</span><br><span class="line">469</span><br><span class="line">470</span><br><span class="line">471</span><br><span class="line">472</span><br><span class="line">473</span><br><span class="line">474</span><br><span class="line">475</span><br><span class="line">476</span><br><span class="line">477</span><br><span class="line">478</span><br><span class="line">479</span><br><span class="line">480</span><br><span class="line">481</span><br><span class="line">482</span><br><span class="line">483</span><br><span class="line">484</span><br><span class="line">485</span><br><span class="line">486</span><br><span class="line">487</span><br><span class="line">488</span><br><span class="line">489</span><br><span class="line">490</span><br><span class="line">491</span><br><span class="line">492</span><br><span class="line">493</span><br><span class="line">494</span><br><span class="line">495</span><br><span class="line">496</span><br><span class="line">497</span><br><span class="line">498</span><br><span class="line">499</span><br><span class="line">500</span><br><span class="line">501</span><br><span class="line">502</span><br><span class="line">503</span><br><span class="line">504</span><br><span class="line">505</span><br><span class="line">506</span><br><span class="line">507</span><br><span class="line">508</span><br><span class="line">509</span><br><span class="line">510</span><br><span class="line">511</span><br><span class="line">512</span><br><span class="line">513</span><br><span class="line">514</span><br><span class="line">515</span><br><span class="line">516</span><br><span class="line">517</span><br><span class="line">518</span><br><span class="line">519</span><br><span class="line">520</span><br><span class="line">521</span><br><span class="line">522</span><br><span class="line">523</span><br><span class="line">524</span><br><span class="line">525</span><br><span class="line">526</span><br><span class="line">527</span><br><span class="line">528</span><br><span class="line">529</span><br><span class="line">530</span><br><span class="line">531</span><br><span class="line">532</span><br><span class="line">533</span><br><span class="line">534</span><br><span class="line">535</span><br><span class="line">536</span><br><span class="line">537</span><br><span class="line">538</span><br><span class="line">539</span><br><span class="line">540</span><br><span class="line">541</span><br><span class="line">542</span><br><span class="line">543</span><br><span class="line">544</span><br><span class="line">545</span><br><span class="line">546</span><br><span class="line">547</span><br><span class="line">548</span><br><span class="line">549</span><br><span class="line">550</span><br><span class="line">551</span><br><span class="line">552</span><br><span class="line">553</span><br><span class="line">554</span><br><span class="line">555</span><br><span class="line">556</span><br><span class="line">557</span><br><span class="line">558</span><br><span class="line">559</span><br><span class="line">560</span><br><span class="line">561</span><br><span class="line">562</span><br><span class="line">563</span><br><span class="line">564</span><br><span class="line">565</span><br><span class="line">566</span><br><span class="line">567</span><br><span class="line">568</span><br><span class="line">569</span><br><span class="line">570</span><br><span class="line">571</span><br><span class="line">572</span><br><span class="line">573</span><br><span class="line">574</span><br><span class="line">575</span><br><span class="line">576</span><br><span class="line">577</span><br><span class="line">578</span><br><span class="line">579</span><br><span class="line">580</span><br><span class="line">581</span><br><span class="line">582</span><br><span class="line">583</span><br><span class="line">584</span><br><span class="line">585</span><br><span class="line">586</span><br><span class="line">587</span><br><span class="line">588</span><br><span class="line">589</span><br><span class="line">590</span><br><span class="line">591</span><br><span class="line">592</span><br><span class="line">593</span><br><span class="line">594</span><br><span class="line">595</span><br><span class="line">596</span><br><span class="line">597</span><br><span class="line">598</span><br><span class="line">599</span><br><span class="line">600</span><br><span class="line">601</span><br><span class="line">602</span><br><span class="line">603</span><br><span class="line">604</span><br><span class="line">605</span><br><span class="line">606</span><br><span class="line">607</span><br><span class="line">608</span><br><span class="line">609</span><br><span class="line">610</span><br><span class="line">611</span><br><span class="line">612</span><br><span class="line">613</span><br><span class="line">614</span><br><span class="line">615</span><br><span class="line">616</span><br><span class="line">617</span><br><span class="line">618</span><br><span class="line">619</span><br><span class="line">620</span><br><span class="line">621</span><br><span class="line">622</span><br><span class="line">623</span><br><span class="line">624</span><br><span class="line">625</span><br><span class="line">626</span><br><span class="line">627</span><br><span class="line">628</span><br><span class="line">629</span><br><span class="line">630</span><br><span class="line">631</span><br><span class="line">632</span><br><span class="line">633</span><br><span class="line">634</span><br><span class="line">635</span><br><span class="line">636</span><br><span class="line">637</span><br><span class="line">638</span><br><span class="line">639</span><br><span class="line">640</span><br><span class="line">641</span><br><span class="line">642</span><br><span class="line">643</span><br><span class="line">644</span><br><span class="line">645</span><br><span class="line">646</span><br><span class="line">647</span><br><span class="line">648</span><br><span class="line">649</span><br><span class="line">650</span><br><span class="line">651</span><br><span class="line">652</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Namespace</span><br><span class="line">metadata:</span><br><span class="line">  name: ingress-nginx</span><br><span class="line">  labels:</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/controller-serviceaccount.yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: ServiceAccount</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">    app.kubernetes.io/component: controller</span><br><span class="line">  name: ingress-nginx</span><br><span class="line">  namespace: ingress-nginx</span><br><span class="line">automountServiceAccountToken: true</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/controller-configmap.yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: ConfigMap</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">    app.kubernetes.io/component: controller</span><br><span class="line">  name: ingress-nginx-controller</span><br><span class="line">  namespace: ingress-nginx</span><br><span class="line">data:</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/clusterrole.yaml</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: ClusterRole</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">  name: ingress-nginx</span><br><span class="line">rules:</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">    resources:</span><br><span class="line">      - configmaps</span><br><span class="line">      - endpoints</span><br><span class="line">      - nodes</span><br><span class="line">      - pods</span><br><span class="line">      - secrets</span><br><span class="line">    verbs:</span><br><span class="line">      - list</span><br><span class="line">      - watch</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">    resources:</span><br><span class="line">      - nodes</span><br><span class="line">    verbs:</span><br><span class="line">      - get</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">    resources:</span><br><span class="line">      - services</span><br><span class="line">    verbs:</span><br><span class="line">      - get</span><br><span class="line">      - list</span><br><span class="line">      - watch</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - extensions</span><br><span class="line">      - networking.k8s.io # k8s 1.14+</span><br><span class="line">    resources:</span><br><span class="line">      - ingresses</span><br><span class="line">    verbs:</span><br><span class="line">      - get</span><br><span class="line">      - list</span><br><span class="line">      - watch</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">    resources:</span><br><span class="line">      - events</span><br><span class="line">    verbs:</span><br><span class="line">      - create</span><br><span class="line">      - patch</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - extensions</span><br><span class="line">      - networking.k8s.io # k8s 1.14+</span><br><span class="line">    resources:</span><br><span class="line">      - ingresses/status</span><br><span class="line">    verbs:</span><br><span class="line">      - update</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - networking.k8s.io # k8s 1.14+</span><br><span class="line">    resources:</span><br><span class="line">      - ingressclasses</span><br><span class="line">    verbs:</span><br><span class="line">      - get</span><br><span class="line">      - list</span><br><span class="line">      - watch</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/clusterrolebinding.yaml</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: ClusterRoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">  name: ingress-nginx</span><br><span class="line">roleRef:</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">  kind: ClusterRole</span><br><span class="line">  name: ingress-nginx</span><br><span class="line">subjects:</span><br><span class="line">  - kind: ServiceAccount</span><br><span class="line">    name: ingress-nginx</span><br><span class="line">    namespace: ingress-nginx</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/controller-role.yaml</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: Role</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">    app.kubernetes.io/component: controller</span><br><span class="line">  name: ingress-nginx</span><br><span class="line">  namespace: ingress-nginx</span><br><span class="line">rules:</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">    resources:</span><br><span class="line">      - namespaces</span><br><span class="line">    verbs:</span><br><span class="line">      - get</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">    resources:</span><br><span class="line">      - configmaps</span><br><span class="line">      - pods</span><br><span class="line">      - secrets</span><br><span class="line">      - endpoints</span><br><span class="line">    verbs:</span><br><span class="line">      - get</span><br><span class="line">      - list</span><br><span class="line">      - watch</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">    resources:</span><br><span class="line">      - services</span><br><span class="line">    verbs:</span><br><span class="line">      - get</span><br><span class="line">      - list</span><br><span class="line">      - watch</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - extensions</span><br><span class="line">      - networking.k8s.io # k8s 1.14+</span><br><span class="line">    resources:</span><br><span class="line">      - ingresses</span><br><span class="line">    verbs:</span><br><span class="line">      - get</span><br><span class="line">      - list</span><br><span class="line">      - watch</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - extensions</span><br><span class="line">      - networking.k8s.io # k8s 1.14+</span><br><span class="line">    resources:</span><br><span class="line">      - ingresses/status</span><br><span class="line">    verbs:</span><br><span class="line">      - update</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - networking.k8s.io # k8s 1.14+</span><br><span class="line">    resources:</span><br><span class="line">      - ingressclasses</span><br><span class="line">    verbs:</span><br><span class="line">      - get</span><br><span class="line">      - list</span><br><span class="line">      - watch</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">    resources:</span><br><span class="line">      - configmaps</span><br><span class="line">    resourceNames:</span><br><span class="line">      - ingress-controller-leader-nginx</span><br><span class="line">    verbs:</span><br><span class="line">      - get</span><br><span class="line">      - update</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">    resources:</span><br><span class="line">      - configmaps</span><br><span class="line">    verbs:</span><br><span class="line">      - create</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">    resources:</span><br><span class="line">      - events</span><br><span class="line">    verbs:</span><br><span class="line">      - create</span><br><span class="line">      - patch</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/controller-rolebinding.yaml</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: RoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">    app.kubernetes.io/component: controller</span><br><span class="line">  name: ingress-nginx</span><br><span class="line">  namespace: ingress-nginx</span><br><span class="line">roleRef:</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">  kind: Role</span><br><span class="line">  name: ingress-nginx</span><br><span class="line">subjects:</span><br><span class="line">  - kind: ServiceAccount</span><br><span class="line">    name: ingress-nginx</span><br><span class="line">    namespace: ingress-nginx</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/controller-service-webhook.yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">    app.kubernetes.io/component: controller</span><br><span class="line">  name: ingress-nginx-controller-admission</span><br><span class="line">  namespace: ingress-nginx</span><br><span class="line">spec:</span><br><span class="line">  type: ClusterIP</span><br><span class="line">  ports:</span><br><span class="line">    - name: https-webhook</span><br><span class="line">      port: 443</span><br><span class="line">      targetPort: webhook</span><br><span class="line">  selector:</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/component: controller</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/controller-service.yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  annotations:</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">    app.kubernetes.io/component: controller</span><br><span class="line">  name: ingress-nginx-controller</span><br><span class="line">  namespace: ingress-nginx</span><br><span class="line">spec:</span><br><span class="line">  type: NodePort</span><br><span class="line">  ports:</span><br><span class="line">    - name: http</span><br><span class="line">      port: 80</span><br><span class="line">      protocol: TCP</span><br><span class="line">      targetPort: http</span><br><span class="line">    - name: https</span><br><span class="line">      port: 443</span><br><span class="line">      protocol: TCP</span><br><span class="line">      targetPort: https</span><br><span class="line">  selector:</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/component: controller</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/controller-deployment.yaml</span><br><span class="line">apiVersion: apps/v1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">    app.kubernetes.io/component: controller</span><br><span class="line">  name: ingress-nginx-controller</span><br><span class="line">  namespace: ingress-nginx</span><br><span class="line">spec:</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app.kubernetes.io/name: ingress-nginx</span><br><span class="line">      app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">      app.kubernetes.io/component: controller</span><br><span class="line">  revisionHistoryLimit: 10</span><br><span class="line">  minReadySeconds: 0</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app.kubernetes.io/name: ingress-nginx</span><br><span class="line">        app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">        app.kubernetes.io/component: controller</span><br><span class="line">    spec:</span><br><span class="line">      dnsPolicy: ClusterFirst</span><br><span class="line">      containers:</span><br><span class="line">        - name: controller</span><br><span class="line">          image: registry.cn-hangzhou.aliyuncs.com/lfy_k8s_ingress-nginx-controller:v0.46.0</span><br><span class="line">          imagePullPolicy: IfNotPresent</span><br><span class="line">          lifecycle:</span><br><span class="line">            preStop:</span><br><span class="line">              exec:</span><br><span class="line">                command:</span><br><span class="line">                  - /wait-shutdown</span><br><span class="line">          args:</span><br><span class="line">            - /nginx-ingress-controller</span><br><span class="line">            - --election-id=ingress-controller-leader</span><br><span class="line">            - --ingress-class=nginx</span><br><span class="line">            - --configmap=$(POD_NAMESPACE)/ingress-nginx-controller</span><br><span class="line">            - --validating-webhook=:8443</span><br><span class="line">            - --validating-webhook-certificate=/usr/local/certificates/cert</span><br><span class="line">            - --validating-webhook-key=/usr/local/certificates/key</span><br><span class="line">          securityContext:</span><br><span class="line">            capabilities:</span><br><span class="line">              drop:</span><br><span class="line">                - ALL</span><br><span class="line">              add:</span><br><span class="line">                - NET_BIND_SERVICE</span><br><span class="line">            runAsUser: 101</span><br><span class="line">            allowPrivilegeEscalation: true</span><br><span class="line">          env:</span><br><span class="line">            - name: POD_NAME</span><br><span class="line">              valueFrom:</span><br><span class="line">                fieldRef:</span><br><span class="line">                  fieldPath: metadata.name</span><br><span class="line">            - name: POD_NAMESPACE</span><br><span class="line">              valueFrom:</span><br><span class="line">                fieldRef:</span><br><span class="line">                  fieldPath: metadata.namespace</span><br><span class="line">            - name: LD_PRELOAD</span><br><span class="line">              value: /usr/local/lib/libmimalloc.so</span><br><span class="line">          livenessProbe:</span><br><span class="line">            failureThreshold: 5</span><br><span class="line">            httpGet:</span><br><span class="line">              path: /healthz</span><br><span class="line">              port: 10254</span><br><span class="line">              scheme: HTTP</span><br><span class="line">            initialDelaySeconds: 10</span><br><span class="line">            periodSeconds: 10</span><br><span class="line">            successThreshold: 1</span><br><span class="line">            timeoutSeconds: 1</span><br><span class="line">          readinessProbe:</span><br><span class="line">            failureThreshold: 3</span><br><span class="line">            httpGet:</span><br><span class="line">              path: /healthz</span><br><span class="line">              port: 10254</span><br><span class="line">              scheme: HTTP</span><br><span class="line">            initialDelaySeconds: 10</span><br><span class="line">            periodSeconds: 10</span><br><span class="line">            successThreshold: 1</span><br><span class="line">            timeoutSeconds: 1</span><br><span class="line">          ports:</span><br><span class="line">            - name: http</span><br><span class="line">              containerPort: 80</span><br><span class="line">              protocol: TCP</span><br><span class="line">            - name: https</span><br><span class="line">              containerPort: 443</span><br><span class="line">              protocol: TCP</span><br><span class="line">            - name: webhook</span><br><span class="line">              containerPort: 8443</span><br><span class="line">              protocol: TCP</span><br><span class="line">          volumeMounts:</span><br><span class="line">            - name: webhook-cert</span><br><span class="line">              mountPath: /usr/local/certificates/</span><br><span class="line">              readOnly: true</span><br><span class="line">          resources:</span><br><span class="line">            requests:</span><br><span class="line">              cpu: 100m</span><br><span class="line">              memory: 90Mi</span><br><span class="line">      nodeSelector:</span><br><span class="line">        kubernetes.io/os: linux</span><br><span class="line">      serviceAccountName: ingress-nginx</span><br><span class="line">      terminationGracePeriodSeconds: 300</span><br><span class="line">      volumes:</span><br><span class="line">        - name: webhook-cert</span><br><span class="line">          secret:</span><br><span class="line">            secretName: ingress-nginx-admission</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/admission-webhooks/validating-webhook.yaml</span><br><span class="line"># before changing this value, check the required kubernetes version</span><br><span class="line"># https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#prerequisites</span><br><span class="line">apiVersion: admissionregistration.k8s.io/v1</span><br><span class="line">kind: ValidatingWebhookConfiguration</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">    app.kubernetes.io/component: admission-webhook</span><br><span class="line">  name: ingress-nginx-admission</span><br><span class="line">webhooks:</span><br><span class="line">  - name: validate.nginx.ingress.kubernetes.io</span><br><span class="line">    matchPolicy: Equivalent</span><br><span class="line">    rules:</span><br><span class="line">      - apiGroups:</span><br><span class="line">          - networking.k8s.io</span><br><span class="line">        apiVersions:</span><br><span class="line">          - v1beta1</span><br><span class="line">        operations:</span><br><span class="line">          - CREATE</span><br><span class="line">          - UPDATE</span><br><span class="line">        resources:</span><br><span class="line">          - ingresses</span><br><span class="line">    failurePolicy: Fail</span><br><span class="line">    sideEffects: None</span><br><span class="line">    admissionReviewVersions:</span><br><span class="line">      - v1</span><br><span class="line">      - v1beta1</span><br><span class="line">    clientConfig:</span><br><span class="line">      service:</span><br><span class="line">        namespace: ingress-nginx</span><br><span class="line">        name: ingress-nginx-controller-admission</span><br><span class="line">        path: /networking/v1beta1/ingresses</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/admission-webhooks/job-patch/serviceaccount.yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: ServiceAccount</span><br><span class="line">metadata:</span><br><span class="line">  name: ingress-nginx-admission</span><br><span class="line">  annotations:</span><br><span class="line">    helm.sh/hook: pre-install,pre-upgrade,post-install,post-upgrade</span><br><span class="line">    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">    app.kubernetes.io/component: admission-webhook</span><br><span class="line">  namespace: ingress-nginx</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/admission-webhooks/job-patch/clusterrole.yaml</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: ClusterRole</span><br><span class="line">metadata:</span><br><span class="line">  name: ingress-nginx-admission</span><br><span class="line">  annotations:</span><br><span class="line">    helm.sh/hook: pre-install,pre-upgrade,post-install,post-upgrade</span><br><span class="line">    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">    app.kubernetes.io/component: admission-webhook</span><br><span class="line">rules:</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - admissionregistration.k8s.io</span><br><span class="line">    resources:</span><br><span class="line">      - validatingwebhookconfigurations</span><br><span class="line">    verbs:</span><br><span class="line">      - get</span><br><span class="line">      - update</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/admission-webhooks/job-patch/clusterrolebinding.yaml</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: ClusterRoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  name: ingress-nginx-admission</span><br><span class="line">  annotations:</span><br><span class="line">    helm.sh/hook: pre-install,pre-upgrade,post-install,post-upgrade</span><br><span class="line">    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">    app.kubernetes.io/component: admission-webhook</span><br><span class="line">roleRef:</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">  kind: ClusterRole</span><br><span class="line">  name: ingress-nginx-admission</span><br><span class="line">subjects:</span><br><span class="line">  - kind: ServiceAccount</span><br><span class="line">    name: ingress-nginx-admission</span><br><span class="line">    namespace: ingress-nginx</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/admission-webhooks/job-patch/role.yaml</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: Role</span><br><span class="line">metadata:</span><br><span class="line">  name: ingress-nginx-admission</span><br><span class="line">  annotations:</span><br><span class="line">    helm.sh/hook: pre-install,pre-upgrade,post-install,post-upgrade</span><br><span class="line">    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">    app.kubernetes.io/component: admission-webhook</span><br><span class="line">  namespace: ingress-nginx</span><br><span class="line">rules:</span><br><span class="line">  - apiGroups:</span><br><span class="line">      - &quot;&quot;</span><br><span class="line">    resources:</span><br><span class="line">      - secrets</span><br><span class="line">    verbs:</span><br><span class="line">      - get</span><br><span class="line">      - create</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/admission-webhooks/job-patch/rolebinding.yaml</span><br><span class="line">apiVersion: rbac.authorization.k8s.io/v1</span><br><span class="line">kind: RoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  name: ingress-nginx-admission</span><br><span class="line">  annotations:</span><br><span class="line">    helm.sh/hook: pre-install,pre-upgrade,post-install,post-upgrade</span><br><span class="line">    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">    app.kubernetes.io/component: admission-webhook</span><br><span class="line">  namespace: ingress-nginx</span><br><span class="line">roleRef:</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">  kind: Role</span><br><span class="line">  name: ingress-nginx-admission</span><br><span class="line">subjects:</span><br><span class="line">  - kind: ServiceAccount</span><br><span class="line">    name: ingress-nginx-admission</span><br><span class="line">    namespace: ingress-nginx</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/admission-webhooks/job-patch/job-createSecret.yaml</span><br><span class="line">apiVersion: batch/v1</span><br><span class="line">kind: Job</span><br><span class="line">metadata:</span><br><span class="line">  name: ingress-nginx-admission-create</span><br><span class="line">  annotations:</span><br><span class="line">    helm.sh/hook: pre-install,pre-upgrade</span><br><span class="line">    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">    app.kubernetes.io/component: admission-webhook</span><br><span class="line">  namespace: ingress-nginx</span><br><span class="line">spec:</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      name: ingress-nginx-admission-create</span><br><span class="line">      labels:</span><br><span class="line">        helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">        app.kubernetes.io/name: ingress-nginx</span><br><span class="line">        app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">        app.kubernetes.io/version: 0.47.0</span><br><span class="line">        app.kubernetes.io/managed-by: Helm</span><br><span class="line">        app.kubernetes.io/component: admission-webhook</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">        - name: create</span><br><span class="line">          image: docker.io/jettech/kube-webhook-certgen:v1.5.1</span><br><span class="line">          imagePullPolicy: IfNotPresent</span><br><span class="line">          args:</span><br><span class="line">            - create</span><br><span class="line">            - --host=ingress-nginx-controller-admission,ingress-nginx-controller-admission.$(POD_NAMESPACE).svc</span><br><span class="line">            - --namespace=$(POD_NAMESPACE)</span><br><span class="line">            - --secret-name=ingress-nginx-admission</span><br><span class="line">          env:</span><br><span class="line">            - name: POD_NAMESPACE</span><br><span class="line">              valueFrom:</span><br><span class="line">                fieldRef:</span><br><span class="line">                  fieldPath: metadata.namespace</span><br><span class="line">      restartPolicy: OnFailure</span><br><span class="line">      serviceAccountName: ingress-nginx-admission</span><br><span class="line">      securityContext:</span><br><span class="line">        runAsNonRoot: true</span><br><span class="line">        runAsUser: 2000</span><br><span class="line">---</span><br><span class="line"># Source: ingress-nginx/templates/admission-webhooks/job-patch/job-patchWebhook.yaml</span><br><span class="line">apiVersion: batch/v1</span><br><span class="line">kind: Job</span><br><span class="line">metadata:</span><br><span class="line">  name: ingress-nginx-admission-patch</span><br><span class="line">  annotations:</span><br><span class="line">    helm.sh/hook: post-install,post-upgrade</span><br><span class="line">    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded</span><br><span class="line">  labels:</span><br><span class="line">    helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">    app.kubernetes.io/name: ingress-nginx</span><br><span class="line">    app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">    app.kubernetes.io/version: 0.47.0</span><br><span class="line">    app.kubernetes.io/managed-by: Helm</span><br><span class="line">    app.kubernetes.io/component: admission-webhook</span><br><span class="line">  namespace: ingress-nginx</span><br><span class="line">spec:</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      name: ingress-nginx-admission-patch</span><br><span class="line">      labels:</span><br><span class="line">        helm.sh/chart: ingress-nginx-3.33.0</span><br><span class="line">        app.kubernetes.io/name: ingress-nginx</span><br><span class="line">        app.kubernetes.io/instance: ingress-nginx</span><br><span class="line">        app.kubernetes.io/version: 0.47.0</span><br><span class="line">        app.kubernetes.io/managed-by: Helm</span><br><span class="line">        app.kubernetes.io/component: admission-webhook</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">        - name: patch</span><br><span class="line">          image: docker.io/jettech/kube-webhook-certgen:v1.5.1</span><br><span class="line">          imagePullPolicy: IfNotPresent</span><br><span class="line">          args:</span><br><span class="line">            - patch</span><br><span class="line">            - --webhook-name=ingress-nginx-admission</span><br><span class="line">            - --namespace=$(POD_NAMESPACE)</span><br><span class="line">            - --patch-mutating=false</span><br><span class="line">            - --secret-name=ingress-nginx-admission</span><br><span class="line">            - --patch-failure-policy=Fail</span><br><span class="line">          env:</span><br><span class="line">            - name: POD_NAMESPACE</span><br><span class="line">              valueFrom:</span><br><span class="line">                fieldRef:</span><br><span class="line">                  fieldPath: metadata.namespace</span><br><span class="line">      restartPolicy: OnFailure</span><br><span class="line">      serviceAccountName: ingress-nginx-admission</span><br><span class="line">      securityContext:</span><br><span class="line">        runAsNonRoot: true</span><br><span class="line">        runAsUser: 2000</span><br></pre></td></tr></table></figure>
+</details>
+<p><img src="/2022/08/26/kubernetes/kubernetes/image-1669756112186.png" alt="image.png"><br>
+ingress 安装完后，产生了两个 service，type 类型一个是 cluster IP（集群内访问），一个是 nodeport（其他机器访问呢）。通过集群的 ip+暴露的端口，能够实现外部请求的统一处理。</p>
+<ul>
+<li>http：虚拟机 ip+31405—&gt;请求发给 http：clusterip+80</li>
+<li>https：虚拟机 ip+32401—&gt;请求发给 https：clusterip+443</li>
+</ul>
+<h3 id="63-使用"><a class="markdownIt-Anchor" href="#63-使用"></a> 6.3 使用</h3>
+<p>示例：</p>
+<ol>
+<li>部署 pod 和 service：</li>
+</ol>
+  <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">hello-server</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">2</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">hello-server</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">hello-server</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">hello-server</span></span><br><span class="line">          <span class="attr">image:</span> <span class="string">registry.cn-hangzhou.aliyuncs.com/lfy_k8s_hello-server</span></span><br><span class="line">          <span class="attr">ports:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">9000</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nginx-demo</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-demo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">2</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">nginx-demo</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">nginx-demo</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nginx-demo</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-demo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nginx-demo</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8000</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">80</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">hello-server</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">hello-server</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">hello-server</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">port:</span> <span class="number">8000</span></span><br><span class="line">      <span class="attr">protocol:</span> <span class="string">TCP</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">9000</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>结构
+<ul>
+<li>pod 结构图示：
+<ul>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756107360.png" alt="image.png"></li>
+</ul>
+</li>
+<li>service 结构图示：
+<ul>
+<li><img src="/2022/08/26/kubernetes/kubernetes/image-1669756105206.png" alt="image.png"></li>
+</ul>
+</li>
+<li>可以从上面的 yaml 文件看到，service 的 type 是默认的是，所以外部不能通过集群的 ip 访问到。</li>
+</ul>
+</li>
+<li>需求：
+<ul>
+<li><a target="_blank" rel="noopener" href="http://hello.atguigu.com:31405">hello.atguigu.com:31405</a> 把请求转给 hello-server 进行处理</li>
+<li><a target="_blank" rel="noopener" href="http://demo.atguigu.com:31405">demo.atguigu.com:31405</a> 把请求转给 nginx-demo 进行处理</li>
+</ul>
+</li>
+<li>配置 ingress 规则：</li>
+</ol>
+  <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.k8s.io/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Ingress</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ingress-host-bar</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ingressClassName:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">rules:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">host:</span> <span class="string">&quot;hello.atguigu.com&quot;</span></span><br><span class="line">      <span class="attr">http:</span></span><br><span class="line">        <span class="attr">paths:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">pathType:</span> <span class="string">Prefix</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">&quot;/&quot;</span></span><br><span class="line">            <span class="attr">backend:</span></span><br><span class="line">              <span class="attr">service:</span></span><br><span class="line">                <span class="attr">name:</span> <span class="string">hello-server</span></span><br><span class="line">                <span class="attr">port:</span></span><br><span class="line">                  <span class="attr">number:</span> <span class="number">8000</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">host:</span> <span class="string">&quot;demo.atguigu.com&quot;</span></span><br><span class="line">      <span class="attr">http:</span></span><br><span class="line">        <span class="attr">paths:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">pathType:</span> <span class="string">Prefix</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">&quot;/nginx&quot;</span> <span class="comment"># 把请求会转给下面的服务，service的地址也要带/nginx，否则就是404</span></span><br><span class="line">            <span class="attr">backend:</span></span><br><span class="line">              <span class="attr">service:</span></span><br><span class="line">                <span class="attr">name:</span> <span class="string">nginx-demo</span></span><br><span class="line">                <span class="attr">port:</span></span><br><span class="line">                  <span class="attr">number:</span> <span class="number">8000</span></span><br></pre></td></tr></table></figure>
+<h3 id="64-路径重写"><a class="markdownIt-Anchor" href="#64-路径重写"></a> 6.4 路径重写</h3>
+<p>开启路径重写功能：<img src="/2022/08/26/kubernetes/kubernetes/image-1669756101279.png" alt="image.png"></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.k8s.io/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Ingress</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">nginx.ingress.kubernetes.io/rewrite-target:</span> <span class="string">/$2</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ingress-host-bar</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ingressClassName:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">rules:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">host:</span> <span class="string">&quot;hello.atguigu.com&quot;</span></span><br><span class="line">      <span class="attr">http:</span></span><br><span class="line">        <span class="attr">paths:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">pathType:</span> <span class="string">Prefix</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">&quot;/&quot;</span></span><br><span class="line">            <span class="attr">backend:</span></span><br><span class="line">              <span class="attr">service:</span></span><br><span class="line">                <span class="attr">name:</span> <span class="string">hello-server</span></span><br><span class="line">                <span class="attr">port:</span></span><br><span class="line">                  <span class="attr">number:</span> <span class="number">8000</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">host:</span> <span class="string">&quot;demo.atguigu.com&quot;</span></span><br><span class="line">      <span class="attr">http:</span></span><br><span class="line">        <span class="attr">paths:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">pathType:</span> <span class="string">Prefix</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">&quot;/nginx(/|$)(.*)&quot;</span> <span class="comment"># 把请求会转给下面的服务，下面的服务一定要能处理这个路径，不能处理就是404</span></span><br><span class="line">            <span class="attr">backend:</span></span><br><span class="line">              <span class="attr">service:</span></span><br><span class="line">                <span class="attr">name:</span> <span class="string">nginx-demo</span></span><br><span class="line">                <span class="attr">port:</span></span><br><span class="line">                  <span class="attr">number:</span> <span class="number">8000</span></span><br></pre></td></tr></table></figure>
+<p>此时 ingress 层的/nginx 请求转发给 service 层时，会去掉 nginx</p>
+<h3 id="65-流量限制"><a class="markdownIt-Anchor" href="#65-流量限制"></a> 6.5 流量限制</h3>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">networking.k8s.io/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Ingress</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">ingress-limit-rate</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">nginx.ingress.kubernetes.io/limit-rps:</span> <span class="string">&quot;1&quot;</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ingressClassName:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">rules:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">host:</span> <span class="string">&quot;haha.atguigu.com&quot;</span></span><br><span class="line">      <span class="attr">http:</span></span><br><span class="line">        <span class="attr">paths:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">pathType:</span> <span class="string">Exact</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">&quot;/&quot;</span></span><br><span class="line">            <span class="attr">backend:</span></span><br><span class="line">              <span class="attr">service:</span></span><br><span class="line">                <span class="attr">name:</span> <span class="string">nginx-demo</span></span><br><span class="line">                <span class="attr">port:</span></span><br><span class="line">                  <span class="attr">number:</span> <span class="number">8000</span></span><br></pre></td></tr></table></figure>
+<h2 id="7-k8s-网络模型"><a class="markdownIt-Anchor" href="#7-k8s-网络模型"></a> 7. k8s 网络模型</h2>
+<p><img src="/2022/08/26/kubernetes/kubernetes/image-1669756097349.png" alt="image.png"></p>
+<h2 id="8-存储抽象"><a class="markdownIt-Anchor" href="#8-存储抽象"></a> 8. 存储抽象</h2>
+<h3 id="81-介绍"><a class="markdownIt-Anchor" href="#81-介绍"></a> 8.1 介绍</h3>
+<p>由于 k8s 的自愈功能，如果某 pod 数据存储在一台机器上，自愈后 pod 启动在其他机器上，会导致原先的数据丢失。</p>
+<p>k8s 为了解决这一问题，提出了存储层的概念，它将所有机器存储的内容统一放到一起，并在所有机器间进行共享，实现了数据的稳定。</p>
+<p>k8s 实现存储层的技术有 Glusterfs、NFS、CephFS，本学习中，使用了 NFS。</p>
+<h3 id="82-nfs-的使用"><a class="markdownIt-Anchor" href="#82-nfs-的使用"></a> 8.2 NFS 的使用</h3>
+<ol>
+<li>所有节点安装 nft：<code>yum install -y nfs-utils</code></li>
+<li>主节点暴露目录，并给各个从节点同步数据：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#nfs主节点</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;/nfs/data/ *(insecure,rw,sync,no_root_squash)&quot;</span> &gt; /etc/exports</span><br><span class="line"></span><br><span class="line"><span class="built_in">mkdir</span> -p /nfs/data</span><br><span class="line">systemctl <span class="built_in">enable</span> rpcbind --now <span class="comment">#</span></span><br><span class="line">systemctl <span class="built_in">enable</span> nfs-server --now <span class="comment"># 设置开机启动</span></span><br><span class="line"><span class="comment">#配置生效</span></span><br><span class="line">exportfs -r</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>从节点同步主节点的数据</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">showmount -e 172.31.0.4 <span class="comment"># 在从节点看主节点有哪些目录可以挂载</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">mkdir</span> -p /nfs/data <span class="comment">#执行以下命令挂载 创建本地的 /nfs/data</span></span><br><span class="line"></span><br><span class="line">mount -t nfs 172.31.0.4:/nfs/data /nfs/data <span class="comment"># 执行数据同步</span></span><br><span class="line"><span class="comment"># 写入一个测试文件</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;hello nfs server&quot;</span> &gt; /nfs/data/test.txt</span><br></pre></td></tr></table></figure>
+<h3 id="83-设置-pod-的数据挂载"><a class="markdownIt-Anchor" href="#83-设置-pod-的数据挂载"></a> 8.3 设置 pod 的数据挂载</h3>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nginx-pv-demo</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-pv-demo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">2</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">nginx-pv-demo</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">nginx-pv-demo</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">          <span class="attr">volumeMounts:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">html</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/usr/share/nginx/html</span></span><br><span class="line">      <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">html</span></span><br><span class="line">          <span class="attr">nfs:</span></span><br><span class="line">            <span class="attr">server:</span> <span class="number">172.31</span><span class="number">.0</span><span class="number">.4</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">/nfs/data/nginx-pv</span></span><br></pre></td></tr></table></figure>
+<p>将 nginx 的/usr/share/nginx/html 挂载到了 nfs 存储层的/nfs/data/nginx-pv</p>
+<h3 id="84-pvpvc-挂载"><a class="markdownIt-Anchor" href="#84-pvpvc-挂载"></a> 8.4 PV&amp;PVC 挂载</h3>
+<p>上述存储挂载存在两个问题，一是 pod 删除后，所挂载的数据不会在数据层删除，二是挂载的数据没有进行限制，如果还有其他挂载，存在数据不受控的情况。</p>
+<p>PV：持久卷（Persistent Volume），将应用需要持久化的数据保存到指定位置。</p>
+<p>PVC：持久卷申明（Persistent Volume Claim），申明需要使用的持久卷规格。</p>
+<p>思想：先创建 pv 池（各种存储目录），当 pod 需要存储空间时，提交 pvc（申请书，写明需要多大空间），然后 k8s 从 pv 池分配该大小的空间。当 pod 不使用空间了，k8s 对不适用的数据进行回收。</p>
+<h3 id="85-示例"><a class="markdownIt-Anchor" href="#85-示例"></a> 8.5 示例</h3>
+<ol>
+<li>创建 pv 池：主节点执行：
+<ul>
+<li>首先创建 pv 池指向的目录（静态供应方式，也有动态供应方式，动态供应不需要提前创建好）
+<ul>
+<li><code>mkdir -p /nfs/data/01</code></li>
+<li><code>mkdir -p /nfs/data/02</code></li>
+<li><code>mkdir -p /nfs/data/03</code></li>
+</ul>
+</li>
+<li>创建 pv，交给 k8s 管理</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">PersistentVolume</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">pv01-10m</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">capacity:</span></span><br><span class="line">    <span class="attr">storage:</span> <span class="string">10M</span></span><br><span class="line">  <span class="attr">accessModes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ReadWriteMany</span></span><br><span class="line">  <span class="attr">storageClassName:</span> <span class="string">nfs</span></span><br><span class="line">  <span class="attr">nfs:</span></span><br><span class="line">    <span class="attr">path:</span> <span class="string">/nfs/data/01</span></span><br><span class="line">    <span class="attr">server:</span> <span class="number">172.31</span><span class="number">.0</span><span class="number">.4</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">PersistentVolume</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">pv02-1gi</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">capacity:</span></span><br><span class="line">    <span class="attr">storage:</span> <span class="string">1Gi</span></span><br><span class="line">  <span class="attr">accessModes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ReadWriteMany</span></span><br><span class="line">  <span class="attr">storageClassName:</span> <span class="string">nfs</span></span><br><span class="line">  <span class="attr">nfs:</span></span><br><span class="line">    <span class="attr">path:</span> <span class="string">/nfs/data/02</span></span><br><span class="line">    <span class="attr">server:</span> <span class="number">172.31</span><span class="number">.0</span><span class="number">.4</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">PersistentVolume</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">pv03-3gi</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">capacity:</span></span><br><span class="line">    <span class="attr">storage:</span> <span class="string">3Gi</span></span><br><span class="line">  <span class="attr">accessModes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ReadWriteMany</span></span><br><span class="line">  <span class="attr">storageClassName:</span> <span class="string">nfs</span></span><br><span class="line">  <span class="attr">nfs:</span></span><br><span class="line">    <span class="attr">path:</span> <span class="string">/nfs/data/03</span></span><br><span class="line">    <span class="attr">server:</span> <span class="number">172.31</span><span class="number">.0</span><span class="number">.4</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>创建 pvc 使用空间——没有指明谁使用，只是告诉 pv 使用了（以需要 200m 的空间演示）</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">kind:</span> <span class="string">PersistentVolumeClaim</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-pvc</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">accessModes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ReadWriteMany</span></span><br><span class="line">  <span class="attr">resources:</span></span><br><span class="line">    <span class="attr">requests:</span></span><br><span class="line">      <span class="attr">storage:</span> <span class="string">200Mi</span></span><br><span class="line">  <span class="attr">storageClassName:</span> <span class="string">nfs</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>创建 pod 绑定 pvc</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nginx-deploy-pvc</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-deploy-pvc</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">2</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">nginx-deploy-pvc</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">nginx-deploy-pvc</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">          <span class="attr">volumeMounts:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">html</span></span><br><span class="line">              <span class="attr">mountPath:</span> <span class="string">/usr/share/nginx/html</span></span><br><span class="line">      <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">html</span></span><br><span class="line">          <span class="attr">persistentVolumeClaim:</span></span><br><span class="line">            <span class="attr">claimName:</span> <span class="string">nginx-pvc</span></span><br></pre></td></tr></table></figure>
+<h2 id="9-configmap"><a class="markdownIt-Anchor" href="#9-configmap"></a> 9. ConfigMap</h2>
+<p>抽取配置文件，同时可以自动更新。以 redis 示例</p>
+<ol>
+<li>创建配置集：<code>kubectl create cm redis-conf --from-file=redis.conf</code>
+<ul>
+<li>前面的 redis-conf 是 k8s 识别的，后面的是本地新建的 redis.conf，注意，这是路径写法。</li>
+<li>创建前需要在本地先创建出 redis.conf，创建完就可以删了</li>
+<li>生成的 redis.conf 部分内容如下：</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">data:</span> <span class="comment">#data是所有真正的数据</span></span><br><span class="line">  <span class="attr">redis.conf:</span> <span class="comment"># key：默认是文件名</span></span><br><span class="line">    <span class="string">appendonly</span> <span class="literal">yes</span> <span class="comment"># value：配置文件的内容</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ConfigMap</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">redis-conf</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">default</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>创建 pod 时使用配置集：</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">redis</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">redis</span></span><br><span class="line">      <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">      <span class="attr">command:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">redis-server</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">&quot;/redis-master/redis.conf&quot;</span> <span class="comment">#指的是redis容器内部的位置</span></span><br><span class="line">      <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">6379</span></span><br><span class="line">      <span class="attr">volumeMounts:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">mountPath:</span> <span class="string">/data</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">data</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">mountPath:</span> <span class="string">/redis-master</span></span><br><span class="line">          <span class="attr">name:</span> <span class="string">config</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">data</span></span><br><span class="line">      <span class="attr">emptyDir:</span> &#123;&#125;</span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">config</span></span><br><span class="line">      <span class="attr">configMap:</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">redis-conf</span></span><br><span class="line">        <span class="attr">items:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="attr">key:</span> <span class="string">redis.conf</span></span><br><span class="line">            <span class="attr">path:</span> <span class="string">redis.conf</span></span><br></pre></td></tr></table></figure>
+<p><img src="/2022/08/26/kubernetes/kubernetes/image.png" alt="image.png"></p>
+<h2 id="10-secret"><a class="markdownIt-Anchor" href="#10-secret"></a> 10. secret</h2>
+<p>Secret 对象类型用来保存敏感信息，例如密码、OAuth 令牌和 SSH 密钥。 将这些信息放在 secret 中比放在 Pod 的定义或者 容器镜像 中来说更加安全和灵活。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">kubectl create secret docker-registry leifengyang-docker \</span><br><span class="line">--docker-username=leifengyang \</span><br><span class="line">--docker-password=Lfy123456 \</span><br><span class="line">--docker-email=534096094@qq.com</span><br><span class="line"></span><br><span class="line"><span class="comment">##命令格式</span></span><br><span class="line">kubectl create secret docker-registry regcred \</span><br><span class="line">  --docker-server=&lt;你的镜像仓库服务器&gt; \</span><br><span class="line">  --docker-username=&lt;你的用户名&gt; \</span><br><span class="line">  --docker-password=&lt;你的密码&gt; \</span><br><span class="line">  --docker-email=&lt;你的邮箱地址&gt;</span><br></pre></td></tr></table></figure>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%BB%8B%E7%BB%8D"><span class="toc-text"> 1. 介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#11-%E5%87%BA%E7%8E%B0%E5%8E%9F%E5%9B%A0"><span class="toc-text"> 1.1 出现原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-kubernetes-%E7%89%B9%E6%80%A7"><span class="toc-text"> 1.2 Kubernetes 特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-%E6%9E%B6%E6%9E%84"><span class="toc-text"> 1.3 架构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%AE%89%E8%A3%85-docker"><span class="toc-text"> 2. 安装 docker</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#21-%E5%BC%80-3-%E4%B8%AA%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text"> 2.1 开 3 个云服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#22-%E6%9C%AC%E5%9C%B0%E8%BF%9E%E6%8E%A5%E5%88%B0-3-%E5%8F%B0%E6%9C%8D%E5%8A%A1%E5%8C%BA%E5%B9%B6%E5%AE%89%E8%A3%85-docker"><span class="toc-text"> 2.2 本地连接到 3 台服务区并安装 docker</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-kubeadm-%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4"><span class="toc-text"> 3. kubeadm 创建集群</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#31-%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84"><span class="toc-text"> 3.1 集群架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#32-%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-text"> 3.2 准备工作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#33-%E5%AE%89%E8%A3%85-kubelet-kubeadm-kubectl"><span class="toc-text"> 3.3 安装 kubelet、kubeadm、kubectl</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#34-%E4%B8%8B%E8%BD%BD%E8%8A%82%E7%82%B9%E9%95%9C%E5%83%8F%E6%96%87%E4%BB%B6"><span class="toc-text"> 3.4 下载节点镜像文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#35-%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%BB%E8%8A%82%E7%82%B9"><span class="toc-text"> 3.5 初始化主节点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#35-node-%E8%8A%82%E7%82%B9%E5%8A%A0%E5%85%A5-master"><span class="toc-text"> 3.5 node 节点加入 master</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#36-%E9%9B%86%E7%BE%A4%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%A4%8D"><span class="toc-text"> 3.6 集群的自我修复</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#37-k8s-%E5%8F%AF%E8%A7%86%E5%8C%96%E7%95%8C%E9%9D%A2"><span class="toc-text"> 3.7 k8s 可视化界面</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-k8s-%E8%B5%84%E6%BA%90%E7%90%86%E8%A7%A3"><span class="toc-text"> 4. k8s 资源理解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#41-%E5%88%9B%E5%BB%BA%E8%B5%84%E6%BA%90%E6%96%B9%E5%BC%8F"><span class="toc-text"> 4.1 创建资源方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#42-namespace"><span class="toc-text"> 4.2 namespace</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#43-pod"><span class="toc-text"> 4.3 Pod</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#44-deployment"><span class="toc-text"> 4.4 Deployment</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#45-%E5%B7%A5%E4%BD%9C%E8%B4%9F%E8%BD%BD"><span class="toc-text"> 4.5 工作负载</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-service"><span class="toc-text"> 5. service</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#51-service"><span class="toc-text"> 5.1 Service</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#52-service-nodeport"><span class="toc-text"> 5.2 service-nodeport</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-ingress"><span class="toc-text"> 6. Ingress</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#61-%E4%BB%8B%E7%BB%8D"><span class="toc-text"> 6.1 介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#62-%E5%AE%89%E8%A3%85"><span class="toc-text"> 6.2 安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#63-%E4%BD%BF%E7%94%A8"><span class="toc-text"> 6.3 使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#64-%E8%B7%AF%E5%BE%84%E9%87%8D%E5%86%99"><span class="toc-text"> 6.4 路径重写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#65-%E6%B5%81%E9%87%8F%E9%99%90%E5%88%B6"><span class="toc-text"> 6.5 流量限制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-k8s-%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B"><span class="toc-text"> 7. k8s 网络模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E5%AD%98%E5%82%A8%E6%8A%BD%E8%B1%A1"><span class="toc-text"> 8. 存储抽象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#81-%E4%BB%8B%E7%BB%8D"><span class="toc-text"> 8.1 介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#82-nfs-%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text"> 8.2 NFS 的使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#83-%E8%AE%BE%E7%BD%AE-pod-%E7%9A%84%E6%95%B0%E6%8D%AE%E6%8C%82%E8%BD%BD"><span class="toc-text"> 8.3 设置 pod 的数据挂载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#84-pvpvc-%E6%8C%82%E8%BD%BD"><span class="toc-text"> 8.4 PV&amp;PVC 挂载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#85-%E7%A4%BA%E4%BE%8B"><span class="toc-text"> 8.5 示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-configmap"><span class="toc-text"> 9. ConfigMap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-secret"><span class="toc-text"> 10. secret</span></a></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://sk370.github.io/2022/08/26/kubernetes/kubernetes/">https://sk370.github.io/2022/08/26/kubernetes/kubernetes/</a></p>
+              <p>版权声明: 转载请注明出处。</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Kubernetes/" rel="tag">Kubernetes</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2022/08/26/zookeeper/zookeeper/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          zookeeper
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/08/28/rabbitmq/RabbitMQ/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          RabbitMQ
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/12/03/blog/hexo/">Hexo + GitHub Pages搭建静态博客</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/29/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/">性能监控</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/29/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95/">压力测试</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/29/springcloud/SpringCloudGateway/">Spring Cloud Gateway</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/29/springcloud/SpringCloudFeign/">Spring Cloud Feign</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/Dubbo/" style="font-size: 10px;">Dubbo</a> <a href="/tags/EhCache/" style="font-size: 10px;">EhCache</a> <a href="/tags/ElasticSearch/" style="font-size: 10px;">ElasticSearch</a> <a href="/tags/JMeter/" style="font-size: 10px;">JMeter</a> <a href="/tags/JSP/" style="font-size: 10px;">JSP</a> <a href="/tags/JUC/" style="font-size: 10px;">JUC</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Java8/" style="font-size: 10px;">Java8</a> <a href="/tags/JavaWeb/" style="font-size: 10px;">JavaWeb</a> <a href="/tags/Kubernetes/" style="font-size: 10px;">Kubernetes</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MyBatis/" style="font-size: 10px;">MyBatis</a> <a href="/tags/MyBatis-Plus/" style="font-size: 10px;">MyBatis-Plus</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/SSM/" style="font-size: 10px;">SSM</a> <a href="/tags/Shiro/" style="font-size: 10px;">Shiro</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Alibaba/" style="font-size: 10px;">Spring Cloud Alibaba</a> <a href="/tags/Spring-Cloud-Feign/" style="font-size: 10px;">Spring Cloud Feign</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 10px;">Spring Cloud Gateway</a> <a href="/tags/Spring-MVC/" style="font-size: 10px;">Spring MVC</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/Spring-Session/" style="font-size: 10px;">Spring Session</a> <a href="/tags/Spring5/" style="font-size: 10px;">Spring5</a> <a href="/tags/Srping-Boot2/" style="font-size: 10px;">Srping Boot2</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/jconsole/" style="font-size: 10px;">jconsole</a> <a href="/tags/jvisualvm/" style="font-size: 10px;">jvisualvm</a> <a href="/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%A1%86%E6%9E%B6/" style="font-size: 10px;">分布式框架</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" style="font-size: 10px;">分布式理论</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Dubbo/">Dubbo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticSearch/">ElasticSearch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaWeb/">JavaWeb</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E6%96%B0%E7%89%B9%E6%80%A7/">Java新特性</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/">MyBatis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis-Plus/">MyBatis-Plus</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SSM/">SSM</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shiro/">Shiro</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Cloud/">Spring Cloud</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Cloud-Alibaba/">Spring Cloud Alibaba</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Framework/">Spring Framework</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Security/">Spring Security</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Session/">Spring Session</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Srping-Boot/">Srping Boot</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95/">压力测试</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF/">容器技术</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/">性能监控</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8A%80%E6%9C%AF%E7%90%86%E8%AE%BA/">技术理论</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/">搭建博客</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7/">构建工具</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E/">模板引擎</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%93%E5%AD%98/">缓存</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022年</a><span class="archive-list-count">36</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dubbo/" rel="tag">Dubbo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EhCache/" rel="tag">EhCache</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JMeter/" rel="tag">JMeter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JSP/" rel="tag">JSP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JUC/" rel="tag">JUC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/" rel="tag">Java8</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaWeb/" rel="tag">JavaWeb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kubernetes/" rel="tag">Kubernetes</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/" rel="tag">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis-Plus/" rel="tag">MyBatis-Plus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSM/" rel="tag">SSM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shiro/" rel="tag">Shiro</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/" rel="tag">Spring Cloud</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud-Alibaba/" rel="tag">Spring Cloud Alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud-Feign/" rel="tag">Spring Cloud Feign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud-Gateway/" rel="tag">Spring Cloud Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-MVC/" rel="tag">Spring MVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/" rel="tag">Spring Security</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Session/" rel="tag">Spring Session</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring5/" rel="tag">Spring5</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Srping-Boot2/" rel="tag">Srping Boot2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jconsole/" rel="tag">jconsole</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jvisualvm/" rel="tag">jvisualvm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zookeeper/" rel="tag">zookeeper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%A1%86%E6%9E%B6/" rel="tag">分布式框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" rel="tag">分布式理论</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 SK370.</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+  </div>
+  
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+    
+<script src="/localshare/js/social-share.js"></script>
+
+    
+<script src="/localshare/js/qrcode.js"></script>
+
+  
+  
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+</body>
+</html>

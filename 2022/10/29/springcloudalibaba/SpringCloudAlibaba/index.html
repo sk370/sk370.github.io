@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Spring Cloud Alibaba | SK370 博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  
+    <meta name="keywords" content="SK370, JAVA, 博客">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="SK370 博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">SK370 博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">SK370的个人博客</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-springcloudalibaba/SpringCloudAlibaba" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Spring Cloud Alibaba
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2022-10-29T03:19:35.000Z" itemprop="datePublished">2022年10月29日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/Spring-Cloud-Alibaba/">Spring Cloud Alibaba</a>
+  </div>
+
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><em>Spring Cloud Alibaba 是阿里巴巴结合自身微服务实践，开源的微服务全家桶。</em></p>
+<span id="more"></span>
+<h2 id="1-spring-cloud-alibaba-nacos"><a class="markdownIt-Anchor" href="#1-spring-cloud-alibaba-nacos"></a> 1. Spring Cloud Alibaba - Nacos</h2>
+<h3 id="11-注册中心"><a class="markdownIt-Anchor" href="#11-注册中心"></a> 1.1 注册中心</h3>
+<ol>
+<li>一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。【注册中心及配置中心】</li>
+<li>使用文档：
+<ul>
+<li>注册中心：</li>
+<li>配置中心：</li>
+</ul>
+</li>
+<li>将 nacos 接入到 gulimall-common 中，作为注册中心：
+<ul>
+<li><img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image.png" alt></li>
+</ul>
+</li>
+<li>下载 nacos 注册中心，</li>
+<li>启动注册中心：解压文件，双击 bin 目录下 starup.cmd
+<ul>
+<li><img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760769696.png" alt></li>
+<li><img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760771315.png" alt></li>
+</ul>
+</li>
+<li>在 5 个 gulimall 的微服务模块中，在 resources/application.yml 文件中填写 nacos 地址 127.0.0.1:8848，并指定名称
+<ul>
+<li>这里可以在 application.propeties 文件中写注册地址和名称吗？
+<ul>
+<li>直觉觉得可以，propterties 和 yml 文件都是配置文件，只不过是文本格式不同</li>
+</ul>
+</li>
+<li><img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760773004.png" alt></li>
+</ul>
+</li>
+<li>使用<code>@EnableDiscoveryClient</code>注解，分别在 5 个微服务的应用类前开启 5 个 gulimall 的注册功能，使得该服务可以注册到发现中心。
+<ul>
+<li><img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760775650.png" alt></li>
+<li>其他模块图略。</li>
+</ul>
+</li>
+<li>测试是否成功，启动<code>com.atguigu.gulimall.coupon.GulimallCouponApplication</code>，浏览器打开 127.0.0.1:8848/nacos，使用默认的登录名 nacos 和密码 nacos 登录。
+<ul>
+<li><img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760779288.png" alt></li>
+</ul>
+</li>
+<li>同理注册其他 gulimall 的微服务模块
+<ul>
+<li><img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760781942.png" alt></li>
+</ul>
+</li>
+</ol>
+<h3 id="12-配置中心"><a class="markdownIt-Anchor" href="#12-配置中心"></a> 1.2 配置中心</h3>
+<h4 id="121-使用及配置"><a class="markdownIt-Anchor" href="#121-使用及配置"></a> 1.2.1 使用及配置</h4>
+<ol>
+<li>在 gulimall-common 中，引入 nacos config starter 依赖
+<ul>
+<li><img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760791436.png" alt></li>
+</ul>
+</li>
+<li>给需要使用配置中的微服务模块<code>resources</code>路径下创建<code>bootstrap.properties</code>【本例 gulimall-coupon】</li>
+</ol>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring.application.name</span>=<span class="string">gulimall-coupon                 #当前微服务/程序的名称</span></span><br><span class="line"><span class="attr">spring.cloud.nacos.config.server-addr</span>=<span class="string">127.0.0.1:8848    #配置中心的ip地址(同注册中心）</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>测试配置中心：
+<ul>
+<li>在需要测试的控制器类中编写方式，定义测试属性，并给该类添加<code>@RefreshScope</code>注解、属性添加<code>@Value</code>注解
+<ul>
+<li><img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760795231.png" alt></li>
+</ul>
+</li>
+<li>在 nacos 配置中心给上面定义的测试属性进行初始化
+<ul>
+<li><img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760810781.png" alt></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>nacos 配置中心相关概念
+<ul>
+<li>命令空间：默认为 public，默认新增的所有配置都在 public 空间，用于配置隔离，可以基于环境设置隔离，比如开发、测试、生产环境；也可以基于服务设置隔离，
+<ul>
+<li><img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760812420.png" alt></li>
+<li>创建命名空间后，可以在配置列表中进行使用，需要切换则需要在<code>bootstrap.properties</code>中设置<code>spring.cloud.nacos.config.namespace=2c40b603-31cb-43e4-bab5-30a1b131af1c</code>
+<ul>
+<li><img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760813952.png" alt></li>
+<li><img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760815485.png" alt></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>配置集：所有配置的集合。</li>
+<li>配置集 ID：Data Id，类似文件名</li>
+<li>配置分组：默认所有的配置集都属于 DEFAULT_GROUP
+<ul>
+<li>切换分组：在<code>bootstrap.properties</code>文件中设置<code>spring.cloud.nacos.config.group=DEFAULT_GROUP</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>使用 nacos 配置中心管理多个配置集，代替 resourcers/application.yml 文件，并在<code>bootstrap.properties</code>文件中进行设置，指定 nacos 配置中心要管理的配置文件。
+<ul>
+<li><img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760817247.png" alt></li>
+<li><img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760818915.png" alt></li>
+<li>按照上述配置后，就不需要 resourcers/application.yml 文件了</li>
+</ul>
+</li>
+</ol>
+<h4 id="122-核心概念"><a class="markdownIt-Anchor" href="#122-核心概念"></a> 1.2.2 核心概念</h4>
+<p>命名空间：用于进行租户粒度的配置隔离。 不同的命名空间下， 可以存在相同的 Group 或 Data ID 的配置。 Namespace 的常用场景之一是不同环境的配置的区分隔离， 例如开发测试环境和生产环境的资源（如配置、 服务） 隔离等。<br>
+配置集：一组相关或者不相关的配置项的集合称为配置集。 在系统中， 一个配置文件通常就是一个配置集， 包含了系统各个方面的配置。 例如， 一个配置集可能包含了数据源、 线程池、 日志级别等配置项。<br>
+配置集 ID：Nacos 中的某个配置集的 ID。 配置集 ID 是组织划分配置的维度之一。 Data ID 通常用于组织划分系统的配置集。 一个系统或者应用可以包含多个配置集， 每个配置集都可以被一个有意义的名称标识。 Data ID 通常采用类 Java 包（ 如 com.taobao.tc.refund.log.level） 的命名规则保证全局唯一性。 此命名规则非强制。<br>
+配置分组：Nacos 中的一组配置集， 是组织配置的维度之一。 通过一个有意义的字符串（ 如 Buy 或 Trade ） 对配置集进行分组， 从而区分 Data ID 相同的配置集。 当您在 Nacos 上创建一个配置时， 如果未填写配置分组的名称， 则配置分组的名称默认采用 DEFAULT_GROUP 。 配置分组的常见场景： 不同的应用或组件使用了相同的配置类型， 如 database_url 配置和 MQ_topic 配置。</p>
+<h4 id="123-原理"><a class="markdownIt-Anchor" href="#123-原理"></a> 1.2.3 原理</h4>
+<p>自动注入：NacosConfigStarter 实现了 org.springframework.cloud.bootstrap.config.PropertySourceLocator 接口， 并将优先级设置成了最高。在 Spring Cloud 应用启动阶段， 会主动从 Nacos Server 端获取对应的数据， 并将获取到的数据转换成 PropertySource 且注入到 Environment 的 PropertySources 属性中， 所以使用@Value 注解也能直接获取 Nacos Server 端配置的内容。<br>
+动态刷新：Nacos Config Starter 默认为所有获取数据成功的 Nacos 的配置项添加了监听功能， 在监听到服务端配置发生变化时会实时触发 org.springframework.cloud.context.refresh.ContextRefresher 的 refresh 方法 。如果需要对 Bean 进行动态刷新， 请参照 Spring 和 Spring Cloud 规范。 推荐给类添加@RefreshScope 或 @ConfigurationProperties 注解。</p>
+<h4 id="124-加载多个配置文件"><a class="markdownIt-Anchor" href="#124-加载多个配置文件"></a> 1.2.4 加载多个配置文件</h4>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring.cloud.nacos.config.server-addr</span>=<span class="string">127.0.0.1:8848</span></span><br><span class="line"><span class="attr">spring.cloud.nacos.config.namespace</span>=<span class="string">31098de9-fa28-41c9-b0bd-c754ce319ed4</span></span><br><span class="line"><span class="attr">spring.cloud.nacos.config.ext-config[0].data-id</span>=<span class="string">gulimall-datasource.yml</span></span><br><span class="line"><span class="attr">spring.cloud.nacos.config.ext-config[0].refresh</span>=<span class="string">false</span></span><br><span class="line"><span class="attr">spring.cloud.nacos.config.ext-config[0].group</span>=<span class="string">dev</span></span><br></pre></td></tr></table></figure>
+<h4 id="125-namespace-与-group-最佳实践"><a class="markdownIt-Anchor" href="#125-namespace-与-group-最佳实践"></a> 1.2.5 namespace 与 group 最佳实践</h4>
+<p>每个微服务创建自己的 namespace 进行隔离， group 来区分 dev， beta， prod 等环境。</p>
+<h2 id="01阿里云oss对象存储"><a class="markdownIt-Anchor" href="#01阿里云oss对象存储"></a> 01.阿里云OSS对象存储</h2>
+<h4 id="普通上传方式"><a class="markdownIt-Anchor" href="#普通上传方式"></a> 普通上传方式</h4>
+<p>文件提交给微服务，微服务发送到阿里云 OSS<br>
+<img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760981489.png" alt></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RunWith(SpringRunner.class)</span></span><br><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">GulimallThirdPartyApplicationTests</span> &#123;</span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    OSSClient ossClient;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testUpload2</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">bucketName</span> <span class="operator">=</span> <span class="string">&quot;gulimall-brands-logo&quot;</span>;</span><br><span class="line">        <span class="type">String</span> <span class="variable">objectName</span> <span class="operator">=</span> <span class="string">&quot;3-2.jpg&quot;</span>;</span><br><span class="line">        String filePath= <span class="string">&quot;C:\\Users\\iceri\\Documents\\3.jpg&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">InputStream</span> <span class="variable">inputStream</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                inputStream = <span class="keyword">new</span> <span class="title class_">FileInputStream</span>(filePath);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            ossClient.putObject(bucketName, objectName, inputStream);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (OSSException oe) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;Caught an OSSException, which means your request made it to OSS, &quot;</span></span><br><span class="line">                    + <span class="string">&quot;but was rejected with an error response for some reason.&quot;</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;Error Message:&quot;</span> + oe.getErrorMessage());</span><br><span class="line">            System.out.println(<span class="string">&quot;Error Code:&quot;</span> + oe.getErrorCode());</span><br><span class="line">            System.out.println(<span class="string">&quot;Request ID:&quot;</span> + oe.getRequestId());</span><br><span class="line">            System.out.println(<span class="string">&quot;Host ID:&quot;</span> + oe.getHostId());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClientException ce) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;Caught an ClientException, which means the client encountered &quot;</span></span><br><span class="line">                    + <span class="string">&quot;a serious internal problem while trying to communicate with OSS, &quot;</span></span><br><span class="line">                    + <span class="string">&quot;such as not being able to access the network.&quot;</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;Error Message:&quot;</span> + ce.getMessage());</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (ossClient != <span class="literal">null</span>) &#123;</span><br><span class="line">                ossClient.shutdown();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="签名方式上传"><a class="markdownIt-Anchor" href="#签名方式上传"></a> 签名方式上传</h4>
+<p>浏览器找 gulimall-third-part 索要签名，浏览器拿到签名后，直接上传到 OSS 服务器<br>
+<img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760978198.png" alt><br>
+直接获取到的签名为 Map 格式，内部无 data 属性，前端在处理时存在不便。为了统一处理返回结果，设置返回对象 R，将 map 放到 R 里面。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;oss/policy&quot;)</span></span><br><span class="line"><span class="keyword">public</span> R <span class="title function_">policy</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="comment">// https://gulimall-brands-logo.oss-cn-chengdu.aliyuncs.com/3-1.jpg //上传后访问的路径</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">host</span> <span class="operator">=</span> <span class="string">&quot;https://&quot;</span> + bucket + <span class="string">&quot;.&quot;</span> + endpoint;</span><br><span class="line">    <span class="comment">// 设置上传到OSS文件的前缀，可置空此项。置空后，文件将上传至Bucket的根目录下。</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">format</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SimpleDateFormat</span>(<span class="string">&quot;yyyy-MM-dd&quot;</span>).format(<span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line">    <span class="type">String</span> <span class="variable">dir</span> <span class="operator">=</span> format + <span class="string">&quot;/&quot;</span>;</span><br><span class="line">    Map&lt;String, String&gt; respMap = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">long</span> <span class="variable">expireTime</span> <span class="operator">=</span> <span class="number">30</span>;</span><br><span class="line">        <span class="type">long</span> <span class="variable">expireEndTime</span> <span class="operator">=</span> System.currentTimeMillis() + expireTime * <span class="number">1000</span>;</span><br><span class="line">        <span class="type">Date</span> <span class="variable">expiration</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Date</span>(expireEndTime);</span><br><span class="line">        <span class="type">PolicyConditions</span> <span class="variable">policyConds</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PolicyConditions</span>();</span><br><span class="line">        policyConds.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, <span class="number">0</span>, <span class="number">1048576000</span>);</span><br><span class="line">        policyConds.addConditionItem(MatchMode.StartWith, PolicyConditions.COND_KEY, dir);</span><br><span class="line"></span><br><span class="line">        <span class="type">String</span> <span class="variable">postPolicy</span> <span class="operator">=</span> client.generatePostPolicy(expiration, policyConds);</span><br><span class="line">        <span class="type">byte</span>[] binaryData = postPolicy.getBytes(<span class="string">&quot;utf-8&quot;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">encodedPolicy</span> <span class="operator">=</span> BinaryUtil.toBase64String(binaryData);</span><br><span class="line">        <span class="type">String</span> <span class="variable">postSignature</span> <span class="operator">=</span> client.calculatePostSignature(postPolicy);</span><br><span class="line"></span><br><span class="line">        respMap = <span class="keyword">new</span> <span class="title class_">LinkedHashMap</span>&lt;String, String&gt;();</span><br><span class="line">        respMap.put(<span class="string">&quot;accessid&quot;</span>, accessId);</span><br><span class="line">        respMap.put(<span class="string">&quot;policy&quot;</span>, encodedPolicy);</span><br><span class="line">        respMap.put(<span class="string">&quot;signature&quot;</span>, postSignature);</span><br><span class="line">        respMap.put(<span class="string">&quot;dir&quot;</span>, dir);</span><br><span class="line">        respMap.put(<span class="string">&quot;host&quot;</span>, host);</span><br><span class="line">        respMap.put(<span class="string">&quot;expire&quot;</span>, String.valueOf(expireEndTime / <span class="number">1000</span>));</span><br><span class="line">        <span class="comment">// respMap.put(&quot;expire&quot;, formatISO8601Date(expiration));</span></span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="comment">// Assert.fail(e.getMessage());</span></span><br><span class="line">        System.out.println(e.getMessage());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> R.ok().put(<span class="string">&quot;data&quot;</span>, respMap);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意：这里要设置阿里云 OSS 允许跨域。<br>
+<img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760973831.png" alt><br>
+<img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760970442.png" alt><br>
+<img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669760967019.png" alt></p>
+<h2 id="第3章-sms"><a class="markdownIt-Anchor" href="#第3章-sms"></a> 第3章 sms</h2>
+<h3 id="41-阿里云短信工具类"><a class="markdownIt-Anchor" href="#41-阿里云短信工具类"></a> 4.1 阿里云短信工具类</h3>
+<p>将阿里云短信服务封装成工具类，会员登录时模块 12，工具模块是 05，而模块 12 依赖了模块 17，模块 17 依赖了模块 05，根据依赖的传递性，在模块 05 中添加阿里云短信服务</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.aliyun<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dysmsapi20170525<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.0.18<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 阿里云短信服务</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> accessKeyId 私有id</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> accessKeySecret 私有key</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> endpoint 短信服务域名</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> signName 短信签名</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> templateCode 短信模板</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> phoneNum 电话号码</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 发送成功返回验证码，失败返回失败消息</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> ResultEntity&lt;String&gt; <span class="title function_">sendShortMessage</span><span class="params">(String accessKeyId, String accessKeySecret, String endpoint, String signName, String templateCode, String phoneNum)</span> &#123;</span><br><span class="line">        <span class="type">Config</span> <span class="variable">config</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Config</span>();</span><br><span class="line">        config.setAccessKeyId(accessKeyId);</span><br><span class="line">        config.setAccessKeySecret(accessKeySecret);</span><br><span class="line">        config.endpoint = endpoint;</span><br><span class="line"></span><br><span class="line">        <span class="type">Client</span> <span class="variable">client</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            client = <span class="keyword">new</span> <span class="title class_">Client</span>(config);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">SendSmsRequest</span> <span class="variable">sendSmsRequest</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SendSmsRequest</span>();</span><br><span class="line">        sendSmsRequest.setSignName(signName);</span><br><span class="line">        sendSmsRequest.setTemplateCode(templateCode);</span><br><span class="line">        sendSmsRequest.setPhoneNumbers(phoneNum);</span><br><span class="line">        <span class="comment">//生成验证码</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">code</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="type">int</span> rand;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">            rand = (<span class="type">int</span>) (Math.random() * <span class="number">10</span>);</span><br><span class="line">            code += rand + <span class="string">&quot;&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        sendSmsRequest.setTemplateParam(<span class="string">&quot;&#123;\&quot;code\&quot;:\&quot;&quot;</span> + code + <span class="string">&quot;\&quot;&#125;&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="type">RuntimeOptions</span> <span class="variable">runtimeOptions</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RuntimeOptions</span>();</span><br><span class="line">        <span class="type">int</span> statusCode;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">SendSmsResponse</span> <span class="variable">sendSmsResponse</span> <span class="operator">=</span> client.sendSmsWithOptions(sendSmsRequest, runtimeOptions);</span><br><span class="line"><span class="comment">//            System.out.println(sendSmsResponse.toString() + &quot;刚发送，看看sendSmsResponse是个啥++++++++++++++++++++++++++++++++++&quot;);</span></span><br><span class="line">            statusCode = sendSmsResponse.statusCode;</span><br><span class="line">            <span class="keyword">if</span> (statusCode == <span class="number">200</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> ResultEntity.successWithData(code);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> ResultEntity.failed(sendSmsResponse.toString());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (TeaException error) &#123;</span><br><span class="line">            <span class="type">String</span> <span class="variable">errMessage</span> <span class="operator">=</span> Common.assertAsString(error.message);</span><br><span class="line"><span class="comment">//            System.out.println(&quot;+++++++++++++++++++++TeaException&quot; + errMessage);</span></span><br><span class="line">            <span class="keyword">return</span> ResultEntity.failed(errMessage);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="type">TeaException</span> <span class="variable">error</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TeaException</span>(e.getMessage(), e);</span><br><span class="line">            <span class="type">String</span> <span class="variable">errMessage</span> <span class="operator">=</span> Common.assertAsString(error.message);</span><br><span class="line"><span class="comment">//            System.out.println(&quot;+++++++++++++++++++++Exception&quot; + errMessage);</span></span><br><span class="line">            <span class="keyword">return</span> ResultEntity.failed(errMessage);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="42-注册过程"><a class="markdownIt-Anchor" href="#42-注册过程"></a> 4.2 注册过程</h3>
+<p>基础功能（发送验证码）：<br>
+<img src="/2022/10/29/springcloudalibaba/SpringCloudAlibaba/image-1669761031630.png" alt><br>
+注册成功后的跳转，使用重定向，防止刷新页面重新提交注册请求。</p>
+<p>防止点击 button 按钮表单刷新：<br>
+button 按钮不设置 type 类型时，默认为 subbmit，默认事件会提交表单（即使表单不带 action 属性）<br>
+设置为 type=button 可以实现单纯的点击效果。</p>
+<p>首次请求响应超时：<br>
+分布式环境中，使用了 Zuul、Feign 后，由于底层都通过 Ribbon 通过 service name 寻找 eureka，第一次请求需要建立缓存、连接等，操作较多，ribbon 的默认超时时间较短，容易报超时错误。<br>
+解决方式是在响应的微服务配置文件中配置（设置大一点的值）：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">ribbon:</span></span><br><span class="line">	<span class="attr">ReadTimeout:</span> <span class="number">1000</span></span><br><span class="line">	<span class="attr">ConnectTimeout:</span> <span class="number">10000</span></span><br></pre></td></tr></table></figure>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-spring-cloud-alibaba-nacos"><span class="toc-text"> 1. Spring Cloud Alibaba - Nacos</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#11-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="toc-text"> 1.1 注册中心</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83"><span class="toc-text"> 1.2 配置中心</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#121-%E4%BD%BF%E7%94%A8%E5%8F%8A%E9%85%8D%E7%BD%AE"><span class="toc-text"> 1.2.1 使用及配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#122-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-text"> 1.2.2 核心概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#123-%E5%8E%9F%E7%90%86"><span class="toc-text"> 1.2.3 原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#124-%E5%8A%A0%E8%BD%BD%E5%A4%9A%E4%B8%AA%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text"> 1.2.4 加载多个配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#125-namespace-%E4%B8%8E-group-%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="toc-text"> 1.2.5 namespace 与 group 最佳实践</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#01%E9%98%BF%E9%87%8C%E4%BA%91oss%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8"><span class="toc-text"> 01.阿里云OSS对象存储</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%99%AE%E9%80%9A%E4%B8%8A%E4%BC%A0%E6%96%B9%E5%BC%8F"><span class="toc-text"> 普通上传方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AD%BE%E5%90%8D%E6%96%B9%E5%BC%8F%E4%B8%8A%E4%BC%A0"><span class="toc-text"> 签名方式上传</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC3%E7%AB%A0-sms"><span class="toc-text"> 第3章 sms</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#41-%E9%98%BF%E9%87%8C%E4%BA%91%E7%9F%AD%E4%BF%A1%E5%B7%A5%E5%85%B7%E7%B1%BB"><span class="toc-text"> 4.1 阿里云短信工具类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#42-%E6%B3%A8%E5%86%8C%E8%BF%87%E7%A8%8B"><span class="toc-text"> 4.2 注册过程</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://sk370.github.io/2022/10/29/springcloudalibaba/SpringCloudAlibaba/">https://sk370.github.io/2022/10/29/springcloudalibaba/SpringCloudAlibaba/</a></p>
+              <p>版权声明: 转载请注明出处。</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring-Cloud-Alibaba/" rel="tag">Spring Cloud Alibaba</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2022/10/25/elasticsearch/ElasticSearch/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          ElasticSearch
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/10/29/springcloud/SpringCloudFeign/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          Spring Cloud Feign
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/12/03/blog/hexo/">Hexo + GitHub Pages搭建静态博客</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/29/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/">性能监控</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/29/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95/">压力测试</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/29/springcloud/SpringCloudGateway/">Spring Cloud Gateway</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/29/springcloud/SpringCloudFeign/">Spring Cloud Feign</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Docker/" style="font-size: 10px;">Docker</a> <a href="/tags/Dubbo/" style="font-size: 10px;">Dubbo</a> <a href="/tags/EhCache/" style="font-size: 10px;">EhCache</a> <a href="/tags/ElasticSearch/" style="font-size: 10px;">ElasticSearch</a> <a href="/tags/JMeter/" style="font-size: 10px;">JMeter</a> <a href="/tags/JSP/" style="font-size: 10px;">JSP</a> <a href="/tags/JUC/" style="font-size: 10px;">JUC</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/Java8/" style="font-size: 10px;">Java8</a> <a href="/tags/JavaWeb/" style="font-size: 10px;">JavaWeb</a> <a href="/tags/Kubernetes/" style="font-size: 10px;">Kubernetes</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MyBatis/" style="font-size: 10px;">MyBatis</a> <a href="/tags/MyBatis-Plus/" style="font-size: 10px;">MyBatis-Plus</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/Nginx/" style="font-size: 10px;">Nginx</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/SSM/" style="font-size: 10px;">SSM</a> <a href="/tags/Shiro/" style="font-size: 10px;">Shiro</a> <a href="/tags/Spring-Cloud/" style="font-size: 10px;">Spring Cloud</a> <a href="/tags/Spring-Cloud-Alibaba/" style="font-size: 10px;">Spring Cloud Alibaba</a> <a href="/tags/Spring-Cloud-Feign/" style="font-size: 10px;">Spring Cloud Feign</a> <a href="/tags/Spring-Cloud-Gateway/" style="font-size: 10px;">Spring Cloud Gateway</a> <a href="/tags/Spring-MVC/" style="font-size: 10px;">Spring MVC</a> <a href="/tags/Spring-Security/" style="font-size: 10px;">Spring Security</a> <a href="/tags/Spring-Session/" style="font-size: 10px;">Spring Session</a> <a href="/tags/Spring5/" style="font-size: 10px;">Spring5</a> <a href="/tags/Srping-Boot2/" style="font-size: 10px;">Srping Boot2</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/jconsole/" style="font-size: 10px;">jconsole</a> <a href="/tags/jvisualvm/" style="font-size: 10px;">jvisualvm</a> <a href="/tags/zookeeper/" style="font-size: 10px;">zookeeper</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%A1%86%E6%9E%B6/" style="font-size: 10px;">分布式框架</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" style="font-size: 10px;">分布式理论</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Dubbo/">Dubbo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticSearch/">ElasticSearch</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaWeb/">JavaWeb</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E6%96%B0%E7%89%B9%E6%80%A7/">Java新特性</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis/">MyBatis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/MyBatis-Plus/">MyBatis-Plus</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SSM/">SSM</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Shiro/">Shiro</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Cloud/">Spring Cloud</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Cloud-Alibaba/">Spring Cloud Alibaba</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Framework/">Spring Framework</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Security/">Spring Security</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring-Session/">Spring Session</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Srping-Boot/">Srping Boot</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95/">压力测试</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">多线程</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF/">容器技术</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/">性能监控</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8A%80%E6%9C%AF%E7%90%86%E8%AE%BA/">技术理论</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/">搭建博客</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/">服务器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7/">构建工具</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E/">模板引擎</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%93%E5%AD%98/">缓存</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022年</a><span class="archive-list-count">36</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dubbo/" rel="tag">Dubbo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EhCache/" rel="tag">EhCache</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JMeter/" rel="tag">JMeter</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JSP/" rel="tag">JSP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JUC/" rel="tag">JUC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java8/" rel="tag">Java8</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaWeb/" rel="tag">JavaWeb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kubernetes/" rel="tag">Kubernetes</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis/" rel="tag">MyBatis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MyBatis-Plus/" rel="tag">MyBatis-Plus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/" rel="tag">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSM/" rel="tag">SSM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shiro/" rel="tag">Shiro</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud/" rel="tag">Spring Cloud</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud-Alibaba/" rel="tag">Spring Cloud Alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud-Feign/" rel="tag">Spring Cloud Feign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Cloud-Gateway/" rel="tag">Spring Cloud Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-MVC/" rel="tag">Spring MVC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Security/" rel="tag">Spring Security</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring-Session/" rel="tag">Spring Session</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring5/" rel="tag">Spring5</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Srping-Boot2/" rel="tag">Srping Boot2</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jconsole/" rel="tag">jconsole</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jvisualvm/" rel="tag">jvisualvm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zookeeper/" rel="tag">zookeeper</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%A1%86%E6%9E%B6/" rel="tag">分布式框架</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" rel="tag">分布式理论</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 SK370.</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+  </div>
+  
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+    
+<script src="/localshare/js/social-share.js"></script>
+
+    
+<script src="/localshare/js/qrcode.js"></script>
+
+  
+  
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+</body>
+</html>
